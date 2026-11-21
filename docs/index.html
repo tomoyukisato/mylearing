@@ -57,8 +57,10 @@ h1{ font-size:1.5rem; font-weight:900; margin:0 0 24px; }
 <script>
 // 学習テーマを増やすときは、この配列に1行追加する
 const ITEMS = [
-  { name:"セキュリティ強化", desc:"Webアプリ・認証・インフラを4週間で", period:"1ヶ月", color:"#3D6FA8",
-    url:"/mylearing/security" }
+  { name:"セキュリティ強化", desc:"Webアプリ・認証・インフラの学習", period:"1ヶ月", color:"#3D6FA8",
+    url:"/mylearing/security" },
+  { name:"Claude Code 開発スタイル学習", desc:"仕組み・明文化・検証・委任の学習", period:"1ヶ月", color:"#2A857C",
+    url:"/mylearing/claude-dev" }
 ];
 
 document.getElementById("list").innerHTML = ITEMS.map(i => `
