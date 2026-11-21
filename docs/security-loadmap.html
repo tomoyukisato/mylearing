@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>セキュリティ強化 1ヶ月ロードマップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --ink:#17222E; --muted:#5B6878; --line:#D3DAE2; --track:#DCE2E9;
+  --w1:#3D6FA8; --w2:#2A857C; --w3:#7556B0; --w4:#B8730E; --final:#17222E;
+  --radius-lg:18px; --radius-sm:8px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A23; --surface:#1A2430; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2C3946; --track:#273340;
+    --w1:#6FA0D8; --w2:#4FB8AD; --w3:#A68BDB; --w4:#E3A23F; --final:#E6ECF2;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A23; --surface:#1A2430; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2C3946; --track:#273340;
+  --w1:#6FA0D8; --w2:#4FB8AD; --w3:#A68BDB; --w4:#E3A23F; --final:#E6ECF2;
+  color-scheme: dark;
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+*,*::before,*::after{ box-sizing:inherit; }
+html{ scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px); }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+  font-size:16px; line-height:1.8; -webkit-font-smoothing:antialiased;
+}
+body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--bg); }
+img,svg{ max-width:100%; }
+code{ font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; font-size:.88em; background:var(--track); padding:.05em .35em; border-radius:4px; }
+a{ color:inherit; }
+:focus-visible{ outline:3px solid var(--w1); outline-offset:3px; border-radius:4px; }
+
+.wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+
+/* Hero */
+.hero{ display:grid; grid-template-columns: 1.1fr .9fr; gap:48px; align-items:center; padding:64px 0 40px; }
+.hero h1{ font-size:clamp(2rem,4.6vw,3.25rem); line-height:1.25; font-weight:900; letter-spacing:.01em; margin:0 0 20px; }
+.hero .lead{ font-size:1.0625rem; color:var(--muted); max-width:34em; margin:0 0 28px; }
+.status{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:20px 22px; max-width:30rem; }
+.status-row{ display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; }
+.status label{ font-weight:700; font-size:.9375rem; }
+.status input[type=date]{ font:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:var(--radius-sm); padding:6px 10px; }
+.status .now{ margin:12px 0 0; font-size:1rem; }
+.status .now strong{ font-weight:900; }
+.status .msg{ margin:6px 0 0; color:var(--muted); font-size:.9375rem; }
+
+.rings-box{ position:relative; justify-self:center; width:100%; max-width:400px; }
+.rings-box svg{ display:block; width:100%; height:auto; }
+.ring-track{ fill:none; stroke:var(--track); }
+.ring-fill{ fill:none; stroke-linecap:round; transition:stroke-dashoffset .7s cubic-bezier(.2,.8,.2,1); transform:rotate(-90deg); transform-origin:200px 200px; }
+.ring-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; }
+.ring-center .pct{ font-size:clamp(2.25rem,6vw,3rem); font-weight:900; line-height:1; }
+.ring-center .cap{ font-size:.8125rem; color:var(--muted); margin-top:6px; }
+.legend{ list-style:none; padding:0; margin:18px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; font-size:.875rem; }
+.legend li{ display:flex; align-items:center; gap:8px; }
+.legend .dot{ width:10px; height:10px; border-radius:50%; flex:none; }
+.legend .lp{ margin-left:auto; color:var(--muted); font-variant-numeric:tabular-nums; }
+.rings-note{ font-size:.8125rem; color:var(--muted); margin:10px 0 0; text-align:center; }
+
+/* Week nav */
+.weeknav{ position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line); }
+.weeknav ol{ list-style:none; margin:0 auto; padding:10px 24px; max-width:1080px; display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+.weeknav a{ display:block; text-decoration:none; padding:6px 10px 8px; border-radius:var(--radius-sm); font-size:.8125rem; font-weight:700; }
+.weeknav a:hover{ background:var(--surface); }
+.weeknav .bar{ display:block; height:4px; border-radius:2px; background:var(--track); margin-top:5px; overflow:hidden; }
+.weeknav .bar i{ display:block; height:100%; width:0; background:var(--c); transition:width .5s ease; }
+.weeknav a.current{ background:var(--surface); box-shadow: inset 0 0 0 1.5px var(--c); }
+
+/* Week sections */
+main{ padding:32px 0 80px; }
+.week{ --c:var(--w1); display:grid; grid-template-columns:96px 1fr; gap:0 28px; padding:48px 0; border-top:1px solid var(--line); }
+.week:first-child{ border-top:0; }
+.wnum{ font-size:4.5rem; font-weight:900; line-height:1; color:var(--c); font-variant-numeric:tabular-nums; }
+.wnum small{ display:block; font-size:.8125rem; font-weight:700; color:var(--muted); margin-top:8px; letter-spacing:.02em; }
+.week h2{ font-size:clamp(1.375rem,2.6vw,1.75rem); line-height:1.4; margin:4px 0 18px; font-weight:900; }
+.goal{ position:relative; background:var(--surface); border-radius:var(--radius-lg); padding:22px 24px 22px 28px; border-left:6px solid var(--c); margin:0 0 28px; }
+.goal p{ margin:0; font-size:1.125rem; font-weight:700; line-height:1.7; }
+.goal .gl{ display:block; font-size:.8125rem; font-weight:700; color:var(--c); margin-bottom:6px; }
+.goal .badge{ position:absolute; top:-12px; right:16px; background:var(--c); color:var(--surface); font-size:.8125rem; font-weight:900; padding:3px 12px; border-radius:999px; opacity:0; transform:scale(.8); transition:opacity .3s, transform .3s; }
+.week.done .goal .badge{ opacity:1; transform:scale(1); }
+
+.cols{ display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+.week h3{ font-size:1rem; font-weight:900; margin:0 0 10px; }
+.learn ul{ margin:0 0 22px; padding-left:1.2em; }
+.learn li{ margin:0 0 6px; }
+.learn li::marker{ color:var(--c); }
+.learn .mat{ font-size:.9375rem; }
+.learn .mat a{ color:var(--ink); text-decoration-color:var(--c); text-decoration-thickness:2px; text-underline-offset:3px; font-weight:500; }
+.learn .mat a:hover{ color:var(--c); }
+.learn .mat .mn{ display:block; font-size:.8125rem; color:var(--muted); }
+
+.checks{ list-style:none; margin:0 0 24px; padding:0; }
+.checks li{ margin:0 0 8px; }
+.checks label{ display:flex; gap:12px; align-items:flex-start; cursor:pointer; padding:10px 12px; border-radius:var(--radius-sm); background:var(--surface); border:1px solid var(--line); transition:border-color .2s; }
+.checks label:hover{ border-color:var(--c); }
+.checks input{ appearance:none; -webkit-appearance:none; flex:none; width:22px; height:22px; margin:2px 0 0; border:2px solid var(--line); border-radius:6px; background:var(--bg); display:grid; place-content:center; cursor:pointer; transition:background .15s,border-color .15s; }
+.checks input::after{ content:""; width:11px; height:6px; border-left:3px solid var(--surface); border-bottom:3px solid var(--surface); transform:rotate(-45deg) translate(1px,-1px); opacity:0; }
+.checks input:checked{ background:var(--c); border-color:var(--c); }
+.checks input:checked::after{ opacity:1; }
+.checks input:checked + span{ color:var(--muted); }
+.checks .kind{ display:inline-block; font-size:.75rem; font-weight:700; color:var(--c); margin-right:6px; }
+.sub{ color:var(--muted); font-size:.875rem; margin:-4px 0 12px; }
+.warn{ border-left:3px solid var(--w4); padding:2px 0 2px 12px; margin:0 0 16px; font-size:.9375rem; }
+
+/* Final */
+.final{ --c:var(--final); }
+.next{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px; }
+.next div{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; }
+.next strong{ display:block; }
+.next span{ color:var(--muted); font-size:.9375rem; }
+
+footer{ border-top:1px solid var(--line); padding:24px 0 40px; color:var(--muted); font-size:.875rem; }
+footer button{ font:inherit; color:var(--muted); background:none; border:1px solid var(--line); border-radius:var(--radius-sm); padding:4px 12px; cursor:pointer; }
+footer button:hover{ color:var(--ink); }
+
+@media (max-width:860px){
+  .hero{ grid-template-columns:1fr; gap:32px; padding-top:40px; }
+  .rings-box{ max-width:340px; }
+  .cols{ grid-template-columns:1fr; gap:8px; }
+  .weeknav ol{ grid-template-columns:repeat(5,minmax(0,1fr)); padding:8px 12px; gap:4px; }
+  .weeknav a{ padding:4px 6px 6px; font-size:.75rem; }
+}
+@media (max-width:600px){
+  .wrap{ padding:0 18px; }
+  .week{ grid-template-columns:1fr; padding:36px 0; }
+  .wnum{ font-size:3rem; display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+  .wnum small{ margin:0; }
+  .next{ grid-template-columns:1fr; }
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ transition:none !important; animation:none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="wrap hero">
+  <div>
+    <h1>セキュリティ強化<br>1ヶ月ロードマップ</h1>
+    <p class="lead">1ヶ月後、設計やレビューの場で、言われる前に自分からセキュリティの観点を挙げられるようになる。チェックを入れるたびに、守りの層が1枚ずつ厚くなっていきます。</p>
+    <div class="status">
+      <div class="status-row">
+        <label for="start">開始日</label>
+        <input type="date" id="start">
+      </div>
+      <p class="now" id="now">開始日を入れると、今いる週と残り日数が表示されます。</p>
+      <p class="msg" id="msg"></p>
+    </div>
+  </div>
+  <div class="rings-box">
+    <div style="position:relative">
+      <svg viewBox="0 0 400 400" role="img" aria-labelledby="ringsTitle">
+        <title id="ringsTitle">週ごとの達成度を表す4重のリング</title>
+        <g id="rings"></g>
+      </svg>
+      <div class="ring-center"><span class="pct" id="pct">0%</span><span class="cap">全体の達成度</span></div>
+    </div>
+    <ul class="legend" id="legend"></ul>
+    <p class="rings-note">内側から外側へ、守る対象 → アプリ → 認証 → インフラの順に防御を重ねます</p>
+  </div>
+</header>
+
+<nav class="weeknav" aria-label="週の切り替え"><ol id="nav"></ol></nav>
+
+<main class="wrap" id="weeks"></main>
+
+<footer class="wrap">
+  <p>チェックの状態と開始日は、このブラウザにだけ保存されます。</p>
+  <button type="button" id="reset">チェックと開始日をリセット</button>
+</footer>
+
+<script>
+const WEEKS = [
+  { id:"w1", color:"--w1", label:"Week 1", short:"全体像", layer:"守る対象",
+    title:"全体像と攻撃者の視点をつかむ",
+    goal:"セキュリティの事例を見たとき、「認証情報の窃取が原因」「アクセス制御の不備」のように、原因を自分の言葉で分類できる。",
+    learn:["情報漏洩の典型パターン：脆弱性の悪用、認証情報の漏洩、設定ミス、内部不正、委託先経由、サプライチェーン","OWASP Top 10:2025の各項目が何を指し、なぜ起きるのか","脅威モデリング（STRIDE）：何を守るか、誰が狙うか、どこが入口か"],
+    mats:[
+      {t:"OWASP Top 10:2025（日本語版）", u:"https://owasp.org/Top10/2025/ja/", n:"無料・Web"},
+      {t:"IPA「安全なウェブサイトの作り方」", u:"https://www.ipa.go.jp/security/vuln/websecurity/about.html", n:"無料PDF"},
+      {t:"徳丸浩『体系的に学ぶ 安全なWebアプリケーションの作り方 第2版』の前半", u:"https://www.maruzenjunkudo.co.jp/products/9784797393163", n:"書籍"},
+      {t:"徳丸本 第3版の改訂ポイント（@IT）", u:"https://atmarkit.itmedia.co.jp/ait/articles/2608/28/news018.html", n:"参考記事"}
+    ],
+    tasks:["担当システムごとに「守るべき資産（会員情報・注文・決済まわり・管理画面）」と「外部からの入口」を1枚に書き出す"],
+    checks:["OWASP Top 10の各項目を、具体例つきで1文ずつ説明できる","担当システムの守るべき資産と入口を、資料を見ずに説明できる","実際の漏洩事例を1件読み、侵入経路と原因を分類できる"] },
+  { id:"w2", color:"--w2", label:"Week 2", short:"Webアプリ", layer:"アプリ",
+    title:"Webアプリの脆弱性を手を動かして理解する",
+    goal:"コードレビューやプルリクエストで、XSS・SQLインジェクション・IDORの危険箇所に気づき、なぜ危険か、どう直すかを説明できる。",
+    learn:["SQLインジェクション、XSS、CSRF、アクセス制御の不備（IDOR）、SSRF、ファイルアップロードの脆弱性","攻撃が成立する様子を自分で再現し、手触りで理解する"],
+    mats:[
+      {t:"PortSwigger Web Security Academy", u:"https://portswigger.net/web-security", n:"無料ハンズオン・英語"},
+      {t:"Web Security Academy の始め方", u:"https://portswigger.net/web-security/getting-started", n:"どこから解くかの道順"},
+      {t:"徳丸本の後半", u:"https://www.maruzenjunkudo.co.jp/products/9784797393163", n:"書籍"}
+    ],
+    taskTitle:"EC-CUBE / Symfony でやること",
+    tasks:["Twigの自動エスケープを外している箇所（`|raw`）がないか確認する","Doctrineでの生SQL・文字列連結クエリを洗い出す","他人の注文やお届け先をIDの書き換えで見られないか、マイページ系の認可チェックを確認する","独自プラグインとカスタマイズ部分をレビューする","`composer audit` で既知の脆弱性がある依存パッケージを確認する"],
+    checks:["Web Security Academy の Apprentice ラボ（SQLi、XSS、アクセス制御）を、解説を見ずに解ける","「Twigの `|raw` がなぜ危険か」「なぜプレースホルダを使うのか」を後輩に説明できる","EC-CUBEのレビュー結果が「問題なし／要確認／要修正」のリストになっている"] },
+  { id:"w3", color:"--w3", label:"Week 3", short:"認証・クラウド", layer:"認証",
+    title:"認証・認可とクラウドの設定ミスを潰す",
+    goal:"認証まわりの設計やクラウドの設定画面を見て、「この設定は危ない」「この権限は広すぎる」と判断できる。",
+    learn:["OAuth 2.0 / OIDC のフロー、JWT検証の落とし穴（署名未検証、`aud`/`iss` 未チェック、有効期限が長すぎる）","リフレッシュトークンのローテーション、MFA、ブルートフォース対策","AWSの最小権限IAM、シークレット管理、公開設定ミス"],
+    mats:[
+      {t:"Auth0 ドキュメント：セキュリティ", u:"https://auth0.com/docs/ja-jp/secure", n:"攻撃防御・トークン・MFA"},
+      {t:"Auth0 テナントのセキュリティ強化ガイド", u:"https://auth0.com/blog/comprehensive-guide-auth0-security-identity-attacks/", n:"英語ブログ"},
+      {t:"Amazon Cognito ユーザープールのセキュリティベストプラクティス", u:"https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/user-pool-security-best-practices.html", n:"公式ドキュメント"},
+      {t:"AWS Well-Architected フレームワーク：セキュリティの柱", u:"https://docs.aws.amazon.com/ja_jp/wellarchitected/latest/security-pillar/welcome.html", n:"公式ホワイトペーパー"}
+    ],
+    tasks:["Auth0 / Cognito のトークン有効期限、MFA設定、許可しているコールバックURL、不要なアプリ連携を棚卸しする","契約管理サービスで、API Gatewayのオーソライザーが全エンドポイントを保護しているか、Lambdaの実行ロールが広すぎないかを確認する","シークレットがコードやAmplifyの環境変数に平文で置かれていないか確認する（Secrets Manager / SSMへの移行を検討）","`npm audit` を実行し、Dependabotを有効にする"],
+    checks:["OIDCのログインフローを図に描いて説明でき、JWT検証で必ず確認すべき項目を言える","Lambdaの実行ロールやIAMポリシーを読んで、過剰な権限を指摘できる","Auth0 / Cognito とAWSの設定棚卸しの結果がまとまっている"] },
+  { id:"w4", color:"--w4", label:"Week 4", short:"インフラ・運用", layer:"インフラ",
+    title:"インフラ・運用・インシデント対応",
+    goal:"サーバーを公開・運用するときに最低限やるべきことをチェックリストとして実行でき、万一漏洩が起きたときの初動を説明できる。",
+    learn:["サーバー堅牢化：SSHは鍵認証のみ、不要ポートを閉じる、fail2ban、自動セキュリティ更新","ログとアラート：「漏れたかどうか」を後から判断するために何を残すか","サプライチェーン対策：依存関係スキャンとシークレットスキャンをCIに組み込む（Trivy、gitleaksなど）","インシデントの初動と、個人情報保護法上の報告義務（個人情報保護委員会への漏えい等報告）"],
+    mats:[
+      {t:"IPA「安全なウェブサイトの運用管理に向けての20ヶ条」", u:"https://www.ipa.go.jp/security/vuln/websecurity/sitecheck.html", n:"運用チェックリスト"},
+      {t:"個人情報保護委員会「漏えい等報告について」", u:"https://www.ppc.go.jp/personalinfo/legal/leakAction", n:"報告が必要な事案と期限"},
+      {t:"個人情報保護委員会「大規模な漏えい等事案を踏まえた対応について（注意喚起）」", u:"https://www.ppc.go.jp/files/pdf/261007_alert_dataleakage.pdf", n:"2026年10月・PDF"}
+    ],
+    warn:"EC-CUBEのVPS（Ubuntu 20.04）は2025年に標準サポートが終了済みです。Week 4で最優先に判断しましょう。",
+    tasks:["Ubuntu Pro（ESM）を使うか、OSアップグレードするかを判断する（PHPのバージョンアップ計画とあわせて整理）","Apacheの設定を見直す：バージョン情報の非表示、セキュリティヘッダー（CSP、HSTSなど）","デプロイパイプラインに `composer audit` とシークレットスキャンを組み込む","バックアップの所在と、実際にリストアできるかを確認する"],
+    checks:["新しくサーバーを立てるときの最低限のセキュリティチェックリストを持っている","「漏洩の疑いがある」と言われたときの最初の1時間の動き（止める・保全する・報告する）を説明できる","依存関係のスキャンがCIで自動実行されている"] }
+];
+
+const KEY = "sec-roadmap-v1";
+let state = { checked:{}, start:"" };
+try{ const s = localStorage.getItem(KEY); if(s){ const p = JSON.parse(s); state = { checked:p.checked||{}, start:p.start||"" }; } }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+
+function itemsOf(w){ return [...w.tasks.map((t,i)=>w.id+"-t"+i), ...w.checks.map((c,i)=>w.id+"-c"+i)]; }
+const FINAL_ID = "final-t0";
+
+function checklist(w, list, prefix, kind){
+  return `<ul class="checks">${list.map((t,i)=>{
+    const id = `${w.id}-${prefix}${i}`;
+    return `<li><label><input type="checkbox" data-id="${id}" data-w="${w.id}" ${state.checked[id]?"checked":""}><span>${kind?`<span class="kind">${kind}</span>`:""}${fmt(t)}</span></label></li>`;
+  }).join("")}</ul>`;
+}
+
+/* Render weeks */
+const weeksEl = document.getElementById("weeks");
+weeksEl.innerHTML = WEEKS.map((w,n)=>`
+<section class="week" id="${w.id}" style="--c:var(${w.color})">
+  <div class="wnum">${n+1}<small>Week ${n+1}・${7*n+1}〜${7*n+7}日目</small></div>
+  <div>
+    <h2>${w.title}</h2>
+    <div class="goal"><span class="gl">この週のゴール</span><p>${fmt(w.goal)}</p><span class="badge">達成</span></div>
+    <div class="cols">
+      <div class="learn">
+        <h3>学ぶこと</h3>
+        <ul>${w.learn.map(l=>`<li>${fmt(l)}</li>`).join("")}</ul>
+        ${w.mats.length?`<h3>教材</h3><ul class="mat">${w.mats.map(m=>`<li><a href="${m.u}" target="_blank" rel="noopener noreferrer">${fmt(m.t)}</a>${m.n?`<span class="mn">${fmt(m.n)}</span>`:""}</li>`).join("")}</ul>`:""}
+      </div>
+      <div>
+        <h3>${w.taskTitle || (n===0?"アウトプット":"自分のシステムでやること")}</h3>
+        ${w.warn?`<p class="warn">${fmt(w.warn)}</p>`:""}
+        ${checklist(w, w.tasks, "t", "")}
+        <h3>到達チェック</h3>
+        <p class="sub">全部に「はい」と言えたら次の週へ</p>
+        ${checklist(w, w.checks, "c", "")}
+      </div>
+    </div>
+  </div>
+</section>`).join("") + `
+<section class="week final" id="final">
+  <div class="wnum">✓<small>仕上げ</small></div>
+  <div>
+    <h2>簡易セキュリティレビュー資料をまとめる</h2>
+    <div class="goal"><span class="gl">1ヶ月の締め</span><p>担当システムについて「確認したこと・見つかったリスク・対応済み／未対応・推奨アクション」を1つの資料にまとめる。引き継ぎドキュメントにも、次の職場で語れる実績にもなります。</p><span class="badge">完走</span></div>
+    <ul class="checks"><li><label><input type="checkbox" data-id="${FINAL_ID}" data-w="final" ${state.checked[FINAL_ID]?"checked":""}><span>簡易セキュリティレビュー資料を完成させる</span></label></li></ul>
+    <h3>その先へ</h3>
+    <div class="next">
+      <div><strong>体系的に固める</strong><span>情報処理安全確保支援士を目標にする</span></div>
+      <div><strong>実践を続ける</strong><span>Web Security Academy の Practitioner レベルに進む</span></div>
+    </div>
+  </div>
+</section>`;
+
+/* Nav + legend */
+document.getElementById("nav").innerHTML = WEEKS.map(w=>`<li><a href="#${w.id}" data-nav="${w.id}" style="--c:var(${w.color})">${w.label}<br>${w.short}<span class="bar"><i></i></span></a></li>`).join("") +
+  `<li><a href="#final" data-nav="final" style="--c:var(--final)">仕上げ<br>レビュー資料<span class="bar"><i></i></span></a></li>`;
+document.getElementById("legend").innerHTML = WEEKS.map(w=>`<li><span class="dot" style="background:var(${w.color})"></span>${w.layer}（${w.label}）<span class="lp" data-lp="${w.id}">0%</span></li>`).join("");
+
+/* Rings: inner = week 1, outer = week 4 */
+const R = [70, 104, 138, 172], SW = 22;
+const ringsEl = document.getElementById("rings");
+ringsEl.innerHTML = WEEKS.map((w,i)=>{
+  const c = 2*Math.PI*R[i];
+  return `<circle class="ring-track" cx="200" cy="200" r="${R[i]}" stroke-width="${SW}"/>
+          <circle class="ring-fill" data-ring="${w.id}" cx="200" cy="200" r="${R[i]}" stroke-width="${SW}" stroke="var(${w.color})" stroke-dasharray="${c}" stroke-dashoffset="${c}"/>`;
+}).join("");
+
+function ratio(ids){ return ids.length ? ids.filter(id=>state.checked[id]).length/ids.length : 0; }
+
+const MSGS = [
+  [0,   "まずはWeek 1の書き出しから。1枚書くだけで景色が変わります。"],
+  [.01, "動き出しました。毎日1つチェックが増えれば十分なペースです。"],
+  [.25, "1/4を超えました。内側の層ができてきています。"],
+  [.5,  "折り返し地点。ここからは自分のシステムに効く作業が中心です。"],
+  [.75, "ゴールが見えています。最後はインフラと運用で外側を固めましょう。"],
+  [1,   "4つの層がそろいました。レビュー資料にまとめて完走です。"]
+];
+
+function update(){
+  let all = [];
+  WEEKS.forEach((w,i)=>{
+    const ids = itemsOf(w); all = all.concat(ids);
+    const r = ratio(ids);
+    const c = 2*Math.PI*R[i];
+    document.querySelector(`[data-ring="${w.id}"]`).setAttribute("stroke-dashoffset", c*(1-r));
+    document.querySelector(`[data-lp="${w.id}"]`).textContent = Math.round(r*100)+"%";
+    document.querySelector(`[data-nav="${w.id}"] .bar i`).style.width = (r*100)+"%";
+    document.getElementById(w.id).classList.toggle("done", r===1);
+  });
+  all.push(FINAL_ID);
+  const fr = state.checked[FINAL_ID]?1:0;
+  document.querySelector(`[data-nav="final"] .bar i`).style.width = (fr*100)+"%";
+  document.getElementById("final").classList.toggle("done", fr===1);
+  const total = ratio(all);
+  document.getElementById("pct").textContent = Math.round(total*100)+"%";
+  let m = MSGS[0][1]; MSGS.forEach(([t,s])=>{ if(total>=t) m=s; });
+  document.getElementById("msg").textContent = m;
+  updateNow();
+}
+
+function updateNow(){
+  const now = document.getElementById("now");
+  document.querySelectorAll("[data-nav]").forEach(a=>a.classList.remove("current"));
+  if(!state.start){ now.textContent = "開始日を入れると、今いる週と残り日数が表示されます。"; return; }
+  const s = new Date(state.start+"T00:00:00"), t = new Date(); t.setHours(0,0,0,0);
+  const day = Math.floor((t - s)/86400000) + 1;
+  if(day < 1){ now.innerHTML = `開始まであと <strong>${1-day}日</strong>。準備はWeek 1の教材を手元にそろえるだけでOKです。`; return; }
+  if(day > 28){ now.innerHTML = `<strong>${day}日目</strong>。予定の28日を過ぎました。残りのチェックを片付けて、レビュー資料で締めましょう。`; document.querySelector('[data-nav="final"]').classList.add("current"); return; }
+  const wk = Math.ceil(day/7);
+  now.innerHTML = `今日は <strong>${day}日目</strong>、<strong>Week ${wk}</strong>（${WEEKS[wk-1].short}）。ゴールまであと ${28-day}日です。`;
+  document.querySelector(`[data-nav="w${wk}"]`).classList.add("current");
+}
+
+document.addEventListener("change", e=>{
+  const el = e.target;
+  if(el.matches('input[type="checkbox"][data-id]')){
+    state.checked[el.dataset.id] = el.checked; save(); update();
+  } else if(el.id === "start"){
+    state.start = el.value; save(); updateNow();
+  }
+});
+document.getElementById("reset").addEventListener("click", ()=>{
+  if(!confirm("チェックと開始日をすべて消します。よろしいですか？")) return;
+  state = { checked:{}, start:"" }; save();
+  document.querySelectorAll('input[type="checkbox"][data-id]').forEach(c=>c.checked=false);
+  document.getElementById("start").value = ""; update();
+});
+
+document.getElementById("start").value = state.start;
+update();
+</script>
+</body>
+</html>
