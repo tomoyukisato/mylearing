@@ -67,6 +67,19 @@ a{ color:inherit; }
 .legend .lp{ margin-left:auto; color:var(--muted); font-variant-numeric:tabular-nums; }
 .rings-note{ font-size:.8125rem; color:var(--muted); margin:10px 0 0; text-align:center; }
 
+/* Deliverables */
+.deliv{ padding:0 0 40px; }
+.deliv h2{ font-size:1.125rem; font-weight:900; margin:0 0 4px; }
+.deliv .sub{ margin:0 0 16px; }
+.deliv-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.deliv-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:20px 22px; }
+.deliv-card strong{ display:block; font-size:1.0625rem; line-height:1.5; margin-bottom:6px; }
+.deliv-card p{ margin:0; color:var(--muted); font-size:.9375rem; }
+.deliv-card .pieces{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; padding:0; list-style:none; }
+.deliv-card .pieces li{ font-size:.75rem; font-weight:700; padding:2px 10px; border-radius:999px; border:1.5px solid var(--c); color:var(--c); }
+.checks.parts label{ border-style:dashed; }
+@media (max-width:860px){ .deliv-grid{ grid-template-columns:1fr; } }
+
 /* Week nav */
 .weeknav{ position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line); }
 .weeknav ol{ list-style:none; margin:0 auto; padding:10px 24px; max-width:1080px; display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
@@ -147,7 +160,7 @@ footer button:hover{ color:var(--ink); }
 <header class="wrap hero">
   <div>
     <h1>Claude Codeで<br>自分の開発スタイルをつくる</h1>
-    <p class="lead">1ヶ月後、Claude Codeの機能を「何の問題を解くためのものか」で説明でき、自分のワークフローをPluginとして人に渡せるようになる。チェックを入れるたびに、仕組みの理解から委任の設計まで、層が1枚ずつ重なっていきます。</p>
+    <p class="lead">1ヶ月後、Claude Codeの機能を「何の問題を解くためのものか」で説明でき、自分のワークフローをPluginとして人に渡せるようになる。チェックを入れるたびに、仕組みの理解から委任の設計まで層が1枚ずつ重なり、最後は人に見せられる開発キットが手元に残ります。</p>
     <div class="status">
       <div class="status-row">
         <label for="start">開始日</label>
@@ -170,6 +183,23 @@ footer button:hover{ color:var(--ink); }
   </div>
 </header>
 
+<section class="wrap deliv" aria-labelledby="delivTitle">
+  <h2 id="delivTitle">1ヶ月後にできあがるもの</h2>
+  <p class="sub">各週の点線の項目が、この2つの部品として積み上がっていきます</p>
+  <div class="deliv-grid">
+    <div class="deliv-card">
+      <strong>自分のClaude Code開発キット</strong>
+      <p>CLAUDE.mdのテンプレート、specワークフローのSkills、Subagents、Hooksを1つのPluginにまとめた公開リポジトリ。別のプロジェクトにもインストールするだけで同じやり方を再現できます。</p>
+      <ul class="pieces"><li style="--c:var(--w1)">CLAUDE.md・rules</li><li style="--c:var(--w2)">Skills・Subagents</li><li style="--c:var(--w3)">Hooks</li><li style="--c:var(--w4)">Plugin・README</li></ul>
+    </div>
+    <div class="deliv-card">
+      <strong>記事「仕様駆動開発をClaude Codeの機能で再設計した話」</strong>
+      <p>何をどの機能に置き直し、何が効いたかを、自分のAI開発原則とあわせて書いたもの。ZennやQiitaで公開します。</p>
+      <ul class="pieces"><li style="--c:var(--w2)">再設計の経緯</li><li style="--c:var(--w3)">検証の工夫</li><li style="--c:var(--w4)">変化の計測</li></ul>
+    </div>
+  </div>
+</section>
+
 <nav class="weeknav" aria-label="週の切り替え"><ol id="nav"></ol></nav>
 
 <main class="wrap" id="weeks"></main>
@@ -184,7 +214,7 @@ const WEEKS = [
   { id:"w1", color:"--w1", label:"Week 1", short:"仕組み", layer:"仕組み",
     title:"エージェントの仕組みとコンテキストを理解する",
     goal:"Claude Codeの1ターンで何が起きているか、そしてなぜ長いセッションほど精度が落ちるのかを、自分の言葉で説明できる。",
-    learn:["エージェント＝LLMがツールをループの中で自律的に使うもの、という捉え方","LLMは「もっともらしさ」を出力する：確率的で揺れること、もっともらしいことと正しいことは別物","コンテキストエンジニアリング：コンテキストは有限で、詰め込むほど精度が落ちる（context rot）","基本操作：Plan Mode、権限設定、`/clear`・`/compact`・巻き戻し、CLAUDE.md","常時オンの指示の置き場所：CLAUDE.md（事実とルール）、`.claude/rules/`（特定のパスだけで読み込むルール）、Output styles（応答の仕方）","モデル選択（Opus・Sonnet・Haiku）、思考量、利用上限：速度・品質・コストのトレードオフ"],
+    learn:["エージェント＝LLMがツールをループの中で自律的に使うもの、という捉え方","LLMは「もっともらしさ」を出力する：確率的で揺れること、もっともらしいことと正しいことは別物","コンテキストエンジニアリング：コンテキストは有限で、詰め込むほど精度が落ちる（context rot）","基本操作：Plan Mode、権限設定、`/clear`・`/compact`・巻き戻し、CLAUDE.md","常時オンの指示の置き場所：CLAUDE.md（事実とルール）、`.claude/rules/`（特定のパスだけで読み込むルール）、Output styles（応答の仕方）","モデル選択（Opus・Sonnet・Haiku）、思考量、利用上限：速度・品質・コストのトレードオフ","Laravel Boost：Laravel公式が配るAI向けのガイドライン・スキル・MCPサーバー。「最初に読ませるもの」と「必要なときだけ読ませるもの」の分け方の実例として読む"],
     mats:[
       {t:"Building effective agents", u:"https://www.anthropic.com/engineering/building-effective-agents", n:"Anthropicブログ・英語／考え方の土台"},
       {t:"Effective context engineering for AI agents", u:"https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", n:"Anthropicブログ・英語／今月の最重要教材"},
@@ -192,14 +222,16 @@ const WEEKS = [
       {t:"How Claude Code works", u:"https://code.claude.com/docs/ja/how-claude-code-works", n:"公式Docs・コアループの仕組み"},
       {t:"CLAUDE.md（メモリ）", u:"https://code.claude.com/docs/ja/memory", n:"公式Docs"},
       {t:"コンテキストウィンドウを探索する", u:"https://code.claude.com/docs/ja/context-window", n:"公式Docs・何がコンテキストを使っているか"},
-      {t:"Output styles", u:"https://code.claude.com/docs/ja/output-styles", n:"公式Docs・CLAUDE.mdとの使い分け"}
+      {t:"Output styles", u:"https://code.claude.com/docs/ja/output-styles", n:"公式Docs・CLAUDE.mdとの使い分け"},
+      {t:"Laravel Boost", u:"https://laravel.com/docs/13.x/boost", n:"Laravel公式Docs・英語／AI向けガイドラインとMCPサーバー"}
     ],
     taskTitle:"アウトプット",
-    tasks:["EC-CUBEのCLAUDE.mdを書き直す（Claudeが実際に2回以上間違えたことだけ残し、200行以内に）。ストアの引き継ぎ資料も兼ねる","A4一枚のメモ「コンテキストに入れるもの・入れないもの」を書く","`/context` で、自分のセッションが何にコンテキストを使っているか確認する","言語やディレクトリ固有のルール（PHP・Twig・JSなど）を `.claude/rules/` に切り出す","同じタスクをSonnetとOpusで試し、速度・品質・コストの差をメモする"],
+    tasks:["練習用Laravelアプリ（セキュリティのロードマップと共通）にLaravel Boostを入れ、生成されるCLAUDE.mdを読む。そこからClaudeが実際に2回以上間違えたことだけを足し、200行以内に保つ","A4一枚のメモ「コンテキストに入れるもの・入れないもの」を書く","`/context` で、自分のセッションが何にコンテキストを使っているか確認する","ディレクトリ固有のルール（`app/Models`、Bladeの `resources/views`、`database/migrations` など）を `.claude/rules/` に切り出す","同じタスクをSonnetとOpusで試し、速度・品質・コストの差をメモする"],
+    parts:["Laravelプロジェクト向けのCLAUDE.mdと `.claude/rules/` のテンプレートをリポジトリに置く"],
     checks:["「エージェントとは何か」を1文で説明できる","context rot とは何か、どう防ぐかを説明できる","CLAUDE.mdに書くべきこと・書くべきでないことを区別できる","ある指示をCLAUDE.md・rules・Output styleのどこに置くべきか、理由つきで判断できる","公式Docsの機能一覧を見て、まだ試していない新機能がないか確認した"] },
   { id:"w2", color:"--w2", label:"Week 2", short:"明文化", layer:"明文化",
     title:"明文化と仕様駆動の再設計（Skills・Subagents）",
-    goal:"実タスク1件を新しいspecワークフローで最後まで回し、メインのコンテキストを汚さずに完了できる。",
+    goal:"練習アプリの機能追加1件（例：注文のキャンセル）を新しいspecワークフローで最後まで回し、メインのコンテキストを汚さずに完了できる。",
     learn:["暗黙知の明文化：AIは書かれていないことを知らない。仕様駆動の本質はここにある","Skills と Subagents の違い：再利用できる「中身」か、隔離された「作業者」か","タスクの規模に応じてプロセスの重さを変える","組み込みスキル（`/code-review`・`/batch`・`/debug` など）：自作する前に、既存のものを知る"],
     mats:[
       {t:"Skills", u:"https://code.claude.com/docs/ja/skills", n:"公式Docs"},
@@ -209,8 +241,9 @@ const WEEKS = [
       {t:"Claude Code: Best practices for agentic coding", u:"https://www.anthropic.com/engineering/claude-code-best-practices", n:"Anthropicブログ・英語"}
     ],
     taskTitle:"アウトプット",
-    tasks:["`/spec-design`・`/spec-tasks`・`/spec-implement` をSkillとして書き直す","既存コード調査用とレビュー用のSubagentを定義する","タスク規模別の運用ルールを決める（小：Plan Modeのみ／中：tasks→implement／大：フルコース）","組み込みスキルを一通り試し、自作のspecスキルと役割が重なっていないか確認する","副作用のあるスキルに `disable-model-invocation: true` を設定し、自分が呼んだときだけ動くようにする"],
-    checks:["SkillとSubagentのどちらを使うべきか、具体例で判断できる","specワークフローで実タスク1件を完了した","調査の中間出力がメインの会話に流れ込んでいない","公式Docsの機能一覧を見て、まだ試していない新機能がないか確認した"] },
+    tasks:["`/spec-design`・`/spec-tasks`・`/spec-implement` をSkillとして書き直す","既存コード調査用とレビュー用のSubagentを定義する","タスク規模別の運用ルールを決める（小：Plan Modeのみ／中：tasks→implement／大：フルコース）","組み込みスキルとLaravel Boostのスキルを一通り試し、自作のspecスキルと役割が重なっていないか確認する","副作用のあるスキルに `disable-model-invocation: true` を設定し、自分が呼んだときだけ動くようにする"],
+    parts:["specワークフローのSkillsと、調査用・レビュー用のSubagentsをリポジトリに入れる"],
+    checks:["SkillとSubagentのどちらを使うべきか、具体例で判断できる","specワークフローで練習アプリの機能追加を1件完了した","調査の中間出力がメインの会話に流れ込んでいない","公式Docsの機能一覧を見て、まだ試していない新機能がないか確認した"] },
   { id:"w3", color:"--w3", label:"Week 3", short:"検証", layer:"検証",
     title:"検証と自動化を組み込む（Hooks・MCP）",
     goal:"Claudeがテストを通すまで自分で走りきり、人間は結果をレビューするだけで済む状態を、1つのタスクで実現する。",
@@ -222,12 +255,13 @@ const WEEKS = [
       {t:"Writing effective tools for agents — with agents", u:"https://www.anthropic.com/engineering/writing-tools-for-agents", n:"Anthropicブログ・英語／AIが使いやすいツール設計"}
     ],
     taskTitle:"アウトプット",
-    tasks:["lint・型チェック・テストを自動で走らせるHooksを入れる","`.env` など触らせたくないファイルの編集を `PreToolUse` Hookでブロックする","`/spec-implement` に完了条件（検証ステップ）を組み込む","一覧表「プロンプトに残すもの／Hookに寄せるもの」を作る","PHP・TypeScript用のcode intelligenceプラグインを入れ、導入前後で `/context` の使用量を比べる"],
+    tasks:["編集のたびにPint（整形）とLarastan（静的解析）、完了前にPest（テスト）を走らせるHooksを入れる","Laravel BoostのMCPサーバーをつなぎ、DBスキーマやエラーログをClaudeが自分で確かめられるようにする","`.env` など触らせたくないファイルの編集を `PreToolUse` Hookでブロックする","`/spec-implement` に完了条件（検証ステップ）を組み込む","一覧表「プロンプトに残すもの／Hookに寄せるもの」を作る","PHP用（フロントがあればTypeScript用も）のcode intelligenceプラグインを入れ、導入前後で `/context` の使用量を比べる"],
+    parts:["検証用のHooksと、「プロンプトに残すもの／Hookに寄せるもの」の判断表をリポジトリに入れる"],
     checks:["「この指示はHookにすべきか」を理由つきで判断できる","Claudeがテスト失敗を自分で読んで直すループが回っている","検証ステップなしで完了扱いになるタスクがない","code intelligenceの導入で、型エラーにClaudeが自分で気づけるようになった","公式Docsの機能一覧を見て、まだ試していない新機能がないか確認した"] },
   { id:"w4", color:"--w4", label:"Week 4", short:"委任・配布", layer:"委任",
     title:"委任・リスク・配布",
     goal:"自分のやり方を他の人がインストールして再現でき、その設計の理由を原則として説明できる。",
-    learn:["委任の設計：どこまで自律させ、どこで人間が判断するか","リスク：プロンプトインジェクション、過剰な権限、MCP接続先の信頼性（セキュリティ学習とつながる部分）","並列化（git worktree）、非対話実行（`claude -p`）、GitHub Actions","Plugins と marketplace による配布","Dynamic workflows と Cross-session messaging：Subagent数個に収まらない作業と、セッション間の連携","設定のスコープ（ユーザー・プロジェクト・プラグイン・管理ポリシー）と重なり方：CLAUDE.mdは加算、SkillsとSubagentsは名前で上書き、Hooksはマージ","実行環境の広がり（デスクトップ・Web・モバイルからのリモート操作）と、同じ基盤で自分のエージェントを作る Claude Agent SDK"],
+    learn:["委任の設計：どこまで自律させ、どこで人間が判断するか","リスク：プロンプトインジェクション、過剰な権限、MCP接続先の信頼性、BoostのTinkerのように任意のコードを実行できるツールの扱い（セキュリティ学習とつながる部分）","並列化（git worktree）、非対話実行（`claude -p`）、GitHub Actions","Plugins と marketplace による配布","Dynamic workflows と Cross-session messaging：Subagent数個に収まらない作業と、セッション間の連携","設定のスコープ（ユーザー・プロジェクト・プラグイン・管理ポリシー）と重なり方：CLAUDE.mdは加算、SkillsとSubagentsは名前で上書き、Hooksはマージ","実行環境の広がり（デスクトップ・Web・モバイルからのリモート操作）と、同じ基盤で自分のエージェントを作る Claude Agent SDK"],
     mats:[
       {t:"セキュリティ", u:"https://code.claude.com/docs/ja/security", n:"公式Docs"},
       {t:"権限（Permissions）", u:"https://code.claude.com/docs/ja/permissions", n:"公式Docs"},
@@ -241,6 +275,7 @@ const WEEKS = [
     ],
     taskTitle:"アウトプット",
     tasks:["git worktreeで2つのタスクを並列に進めてみる","`claude -p` で定型作業（例：PRの要約）を1つ自動化する","Week 2〜3の成果（Skills・Subagents・Hooks）をPluginにまとめ、READMEを書く","Dynamic workflowで、コードベースの小さな監査（例：未使用コードの洗い出し）を1回試す","チームに配布するときに、Pluginに入れるものと各自の設定に任せるものを決める","Week 1と比べて、自分のワークフローの変化を1つの指標で比べる（例：手で直した回数、待ち時間）"],
+    parts:["記事の下書きを書く（何を変え、何が効いたか、Week 1からの変化の数字つき）"],
     checks:["権限設定を読んで、Claudeに許している範囲を説明できる","別のリポジトリにPluginを入れて、同じワークフローが動いた","プロンプトインジェクションのリスクと、自分の設定での対策を説明できる","設定が複数のレベルにあるとき、どれが効くかを説明できる","公式Docsの機能一覧を見て、まだ試していない新機能がないか確認した"] }
 ];
 
@@ -252,11 +287,12 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e
 const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fmt = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
 
-function itemsOf(w){ return [...w.tasks.map((t,i)=>w.id+"-t"+i), ...w.checks.map((c,i)=>w.id+"-c"+i)]; }
-const FINAL_ID = "final-t0";
+function itemsOf(w){ return [...w.tasks.map((t,i)=>w.id+"-t"+i), ...(w.parts||[]).map((t,i)=>w.id+"-p"+i), ...w.checks.map((c,i)=>w.id+"-c"+i)]; }
+const FINAL = ["「自分のAI開発原則」10行を書き、PluginのREADMEに載せる","開発キットのリポジトリを公開する（Pluginとしてインストールできる状態で）","記事「仕様駆動開発をClaude Codeの機能で再設計した話」を公開する","セキュリティのロードマップで作る `/security-check` Skillを開発キットに入れる"];
+const FINAL_IDS = FINAL.map((_,i)=>"final-t"+i);
 
 function checklist(w, list, prefix, kind){
-  return `<ul class="checks">${list.map((t,i)=>{
+  return `<ul class="checks${prefix==="p"?" parts":""}">${list.map((t,i)=>{
     const id = `${w.id}-${prefix}${i}`;
     return `<li><label><input type="checkbox" data-id="${id}" data-w="${w.id}" ${state.checked[id]?"checked":""}><span>${kind?`<span class="kind">${kind}</span>`:""}${fmt(t)}</span></label></li>`;
   }).join("")}</ul>`;
@@ -280,6 +316,7 @@ weeksEl.innerHTML = WEEKS.map((w,n)=>`
         <h3>${w.taskTitle || (n===0?"アウトプット":"自分のシステムでやること")}</h3>
         ${w.warn?`<p class="warn">${fmt(w.warn)}</p>`:""}
         ${checklist(w, w.tasks, "t", "")}
+        ${w.parts?`<h3>成果物への積み上げ</h3>${checklist(w, w.parts, "p", "")}`:""}
         <h3>到達チェック</h3>
         <p class="sub">全部に「はい」と言えたら次の週へ</p>
         ${checklist(w, w.checks, "c", "")}
@@ -290,9 +327,9 @@ weeksEl.innerHTML = WEEKS.map((w,n)=>`
 <section class="week final" id="final">
   <div class="wnum">✓<small>仕上げ</small></div>
   <div>
-    <h2>自分のAI開発原則を書く</h2>
+    <h2>成果物を完成させて公開する</h2>
     <div class="goal"><span class="gl">1ヶ月の締め</span><p>4週間で得た判断を10行程度の原則にまとめる。たとえば「保証が必要なものはプロンプトではなくHookに書く」「同じ指摘を2回したらCLAUDE.mdに入れる」。ツールが変わっても持ち運べる、自分のやり方の核になります。</p><span class="badge">完走</span></div>
-    <ul class="checks"><li><label><input type="checkbox" data-id="${FINAL_ID}" data-w="final" ${state.checked[FINAL_ID]?"checked":""}><span>「自分のAI開発原則」10行を書き、PluginのREADMEに載せる</span></label></li></ul>
+    <ul class="checks">${FINAL.map((t,i)=>`<li><label><input type="checkbox" data-id="${FINAL_IDS[i]}" data-w="final" ${state.checked[FINAL_IDS[i]]?"checked":""}><span>${fmt(t)}</span></label></li>`).join("")}</ul>
     <h3>その先へ</h3>
     <div class="next">
       <div><strong>チームに広げる</strong><span>転職先のチームでPluginを配布し、使われ方からSkillやCLAUDE.mdを改訂する</span></div>
@@ -303,7 +340,7 @@ weeksEl.innerHTML = WEEKS.map((w,n)=>`
 
 /* Nav + legend */
 document.getElementById("nav").innerHTML = WEEKS.map(w=>`<li><a href="#${w.id}" data-nav="${w.id}" style="--c:var(${w.color})">${w.label}<br>${w.short}<span class="bar"><i></i></span></a></li>`).join("") +
-  `<li><a href="#final" data-nav="final" style="--c:var(--final)">仕上げ<br>開発原則<span class="bar"><i></i></span></a></li>`;
+  `<li><a href="#final" data-nav="final" style="--c:var(--final)">仕上げ<br>公開<span class="bar"><i></i></span></a></li>`;
 document.getElementById("legend").innerHTML = WEEKS.map(w=>`<li><span class="dot" style="background:var(${w.color})"></span>${w.layer}（${w.label}）<span class="lp" data-lp="${w.id}">0%</span></li>`).join("");
 
 /* Rings: inner = week 1, outer = week 4 */
@@ -323,7 +360,7 @@ const MSGS = [
   [.25, "1/4を超えました。仕組みの層ができてきています。"],
   [.5,  "折り返し地点。ここからは検証と自動化で、任せられる範囲を広げます。"],
   [.75, "ゴールが見えています。最後は委任と配布で、やり方を人に渡せる形にします。"],
-  [1,   "4つの層がそろいました。開発原則にまとめて完走です。"]
+  [1,   "4つの層がそろいました。開発キットと記事を公開して完走です。"]
 ];
 
 function update(){
@@ -337,8 +374,8 @@ function update(){
     document.querySelector(`[data-nav="${w.id}"] .bar i`).style.width = (r*100)+"%";
     document.getElementById(w.id).classList.toggle("done", r===1);
   });
-  all.push(FINAL_ID);
-  const fr = state.checked[FINAL_ID]?1:0;
+  all = all.concat(FINAL_IDS);
+  const fr = ratio(FINAL_IDS);
   document.querySelector(`[data-nav="final"] .bar i`).style.width = (fr*100)+"%";
   document.getElementById("final").classList.toggle("done", fr===1);
   const total = ratio(all);
@@ -355,7 +392,7 @@ function updateNow(){
   const s = new Date(state.start+"T00:00:00"), t = new Date(); t.setHours(0,0,0,0);
   const day = Math.floor((t - s)/86400000) + 1;
   if(day < 1){ now.innerHTML = `開始まであと <strong>${1-day}日</strong>。準備はWeek 1の教材を手元にそろえるだけでOKです。`; return; }
-  if(day > 28){ now.innerHTML = `<strong>${day}日目</strong>。予定の28日を過ぎました。残りのチェックを片付けて、開発原則で締めましょう。`; document.querySelector('[data-nav="final"]').classList.add("current"); return; }
+  if(day > 28){ now.innerHTML = `<strong>${day}日目</strong>。予定の28日を過ぎました。残りのチェックを片付けて、成果物の公開で締めましょう。`; document.querySelector('[data-nav="final"]').classList.add("current"); return; }
   const wk = Math.ceil(day/7);
   now.innerHTML = `今日は <strong>${day}日目</strong>、<strong>Week ${wk}</strong>（${WEEKS[wk-1].short}）。ゴールまであと ${28-day}日です。`;
   document.querySelector(`[data-nav="w${wk}"]`).classList.add("current");
