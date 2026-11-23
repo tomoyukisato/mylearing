@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>セキュリティ強化 1日ごとのカリキュラム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --ink:#17222E; --muted:#5B6878; --line:#D3DAE2; --track:#DCE2E9;
+  --w1:#3D6FA8; --w2:#2A857C; --w3:#7556B0; --w4:#B8730E;
+  --radius-lg:18px; --radius-sm:8px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A23; --surface:#1A2430; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2C3946; --track:#273340;
+    --w1:#6FA0D8; --w2:#4FB8AD; --w3:#A68BDB; --w4:#E3A23F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A23; --surface:#1A2430; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2C3946; --track:#273340;
+  --w1:#6FA0D8; --w2:#4FB8AD; --w3:#A68BDB; --w4:#E3A23F;
+  color-scheme: dark;
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+*,*::before,*::after{ box-sizing:inherit; }
+html{ scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px); }
+body{ margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+  font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased; }
+body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--bg); }
+code{ font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; font-size:.86em; background:var(--track); padding:.05em .35em; border-radius:4px; word-break:break-all; }
+a{ color:inherit; }
+:focus-visible{ outline:3px solid var(--w1); outline-offset:3px; border-radius:4px; }
+.wrap{ max-width:920px; margin:0 auto; padding:0 24px; }
+
+header{ padding:48px 0 32px; }
+.back{ display:inline-block; font-size:.875rem; font-weight:700; color:var(--muted); text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:3px 14px; margin-bottom:20px; }
+.back:hover{ color:var(--ink); background:var(--surface); }
+h1{ font-size:clamp(1.625rem,3.6vw,2.375rem); line-height:1.35; font-weight:900; margin:0 0 14px; }
+.lead{ color:var(--muted); margin:0 0 24px; max-width:40em; }
+.status{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:18px 22px; display:grid; gap:12px; }
+.status-row{ display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; }
+.status label{ font-weight:700; font-size:.9375rem; }
+.status input[type=date]{ font:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:var(--radius-sm); padding:5px 10px; }
+.status .now{ margin:0; }
+.status .now strong{ font-weight:900; }
+.prog{ display:flex; align-items:center; gap:14px; font-size:.9375rem; }
+.prog .track{ flex:1; height:8px; border-radius:4px; background:var(--track); overflow:hidden; display:flex; }
+.prog .track i{ display:block; height:100%; transition:width .5s ease; }
+.prog span{ font-variant-numeric:tabular-nums; white-space:nowrap; }
+.today-btn{ font:inherit; font-weight:700; font-size:.875rem; color:var(--surface); background:var(--ink); border:0; border-radius:999px; padding:5px 16px; cursor:pointer; }
+.today-btn[hidden]{ display:none; }
+
+.weeknav{ position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line); }
+.weeknav ol{ list-style:none; margin:0 auto; padding:10px 24px; max-width:920px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.weeknav a{ display:block; text-decoration:none; padding:6px 10px 8px; border-radius:var(--radius-sm); font-size:.8125rem; font-weight:700; }
+.weeknav a:hover{ background:var(--surface); }
+.weeknav .bar{ display:block; height:4px; border-radius:2px; background:var(--track); margin-top:5px; overflow:hidden; }
+.weeknav .bar i{ display:block; height:100%; width:0; background:var(--c); transition:width .5s ease; }
+
+main{ padding:8px 0 64px; }
+.week{ padding:40px 0 8px; }
+.week-head{ display:flex; align-items:baseline; gap:14px; margin:0 0 18px; }
+.week-head .n{ font-size:2.75rem; font-weight:900; line-height:1; color:var(--c); }
+.week-head h2{ font-size:1.25rem; font-weight:900; margin:0; line-height:1.4; }
+.week-head small{ display:block; font-size:.8125rem; color:var(--muted); font-weight:700; }
+
+.days{ list-style:none; margin:0; padding:0; border-left:3px solid var(--c); }
+.day{ position:relative; display:grid; grid-template-columns:92px 1fr auto; gap:0 20px; padding:18px 0 18px 20px; border-bottom:1px solid var(--line); }
+.day:last-child{ border-bottom:0; }
+.day::before{ content:""; position:absolute; left:-9px; top:26px; width:15px; height:15px; border-radius:50%; background:var(--bg); border:3px solid var(--c); }
+.day.done::before{ background:var(--c); }
+.day.review{ background:color-mix(in srgb, var(--c) 7%, transparent); }
+.day.today{ background:var(--surface); box-shadow:inset 0 0 0 2px var(--c); border-radius:var(--radius-sm); }
+.dnum{ font-weight:900; font-size:1.125rem; line-height:1.3; }
+.dnum small{ display:block; font-size:.8125rem; font-weight:700; color:var(--muted); }
+.dnum .tag{ display:inline-block; margin-top:6px; font-size:.75rem; font-weight:900; color:var(--surface); background:var(--c); border-radius:999px; padding:1px 10px; }
+.day h3{ font-size:1.0625rem; font-weight:900; margin:0 0 6px; line-height:1.5; }
+.day ul.todo{ margin:0 0 8px; padding-left:1.15em; }
+.day ul.todo li{ margin:0 0 4px; }
+.day ul.todo li::marker{ color:var(--c); }
+.mats{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 6px; padding:0; list-style:none; }
+.mats a{ display:inline-block; font-size:.8125rem; font-weight:500; text-decoration:none; border:1px solid var(--line); background:var(--surface); border-radius:var(--radius-sm); padding:2px 10px; }
+.mats a:hover{ border-color:var(--c); color:var(--c); }
+.goalline{ margin:0; font-size:.875rem; color:var(--muted); }
+.goalline b{ color:var(--ink); font-weight:700; }
+.check{ display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; font-size:.75rem; font-weight:700; color:var(--muted); padding-top:2px; }
+.check input{ appearance:none; -webkit-appearance:none; width:28px; height:28px; margin:0; border:2px solid var(--line); border-radius:8px; background:var(--bg); display:grid; place-content:center; cursor:pointer; transition:background .15s,border-color .15s; }
+.check input::after{ content:""; width:13px; height:7px; border-left:3px solid var(--surface); border-bottom:3px solid var(--surface); transform:rotate(-45deg) translate(1px,-1px); opacity:0; }
+.check input:checked{ background:var(--c); border-color:var(--c); }
+.check input:checked::after{ opacity:1; }
+.day.done h3, .day.done ul.todo{ color:var(--muted); }
+
+footer{ border-top:1px solid var(--line); padding:24px 0 40px; color:var(--muted); font-size:.875rem; }
+footer button{ font:inherit; color:var(--muted); background:none; border:1px solid var(--line); border-radius:var(--radius-sm); padding:4px 12px; cursor:pointer; }
+footer button:hover{ color:var(--ink); }
+
+@media (max-width:640px){
+  .wrap{ padding:0 16px; }
+  .weeknav ol{ padding:8px 12px; gap:4px; }
+  .weeknav a{ padding:4px 6px 6px; font-size:.75rem; }
+  .day{ grid-template-columns:1fr auto; padding-left:16px; }
+  .dnum{ grid-column:1 / -1; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; margin-bottom:4px; }
+  .dnum small{ display:inline; }
+  .dnum .tag{ margin-top:0; }
+  .day > div:nth-child(2){ grid-column:1; }
+}
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{ transition:none !important; } }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <a class="back" href="https://claude.ai/artifact/H2cmQkcMXk4fAPiqTKvHLt" target="_blank" rel="noopener noreferrer">ロードマップを開く</a>
+  <h1>セキュリティ強化 1日ごとのカリキュラム</h1>
+  <p class="lead">ロードマップの各週を、1日あたり約60分の作業に分けました。7日目ごとは振り返りと成果物づくりの日です。</p>
+  <div class="status">
+    <div class="status-row">
+      <label for="start">開始日</label>
+      <input type="date" id="start">
+      <button type="button" class="today-btn" id="toToday" hidden>今日の内容へ</button>
+    </div>
+    <p class="now" id="now"></p>
+    <div class="prog"><div class="track" id="track"></div><span id="cnt">0 / 28日</span></div>
+  </div>
+</header>
+<nav class="weeknav" aria-label="週の切り替え"><ol id="nav"></ol></nav>
+<main class="wrap" id="weeks"></main>
+<footer class="wrap">
+  <p>完了の状態と開始日は、このブラウザにだけ保存されます。ロードマップのページとは別に保存されるので、開始日はこちらでも入れてください。</p>
+  <button type="button" id="reset">完了と開始日をリセット</button>
+</footer>
+<script>
+const D = {"key": "sec-curriculum-v1", "weeks": [["全体像と攻撃者の視点", "--w1"], ["Webアプリの脆弱性", "--w2"], ["認証・認可とクラウド", "--w3"], ["インフラ・運用・インシデント対応", "--w4"]], "days": [["事例から入る", 60, ["最近の情報漏洩ニュースを2件読み、「どこから入られたか」「何が原因か」をメモする", "OWASP Top 10:2025 のA01〜A03を読む"], ["owasp"], "2件の事例を、侵入経路と原因で説明できる"], ["OWASP Top 10 を一巡する", 60, ["A04〜A10を読む", "10項目それぞれを、具体例つきの1文で自分の言葉に書き直す"], ["owasp"], "10項目を1文ずつ言える"], ["Webの基礎を固め直す", 60, ["徳丸本の前半（HTTP・セッション管理・同一オリジンポリシー）を読む", "IPA「安全なウェブサイトの作り方」の脆弱性一覧に目を通す"], ["toku", "ipa"], "セッションIDとCookieの役割を説明できる"], ["練習アプリを立ち上げる", 60, ["Laravelの新規プロジェクトをDocker（Sail）で作る", "スターターキットで会員登録・ログインを入れる", "GitHubにリポジトリを作る"], [], "ログインできるアプリがリポジトリにある"], ["練習アプリの雛形を作る", 75, ["商品・注文・マイページ・管理画面・ファイルアップロードの画面とモデルを用意する（Claude Codeで生成してよい）"], [], "5つの機能が最低限動く"], ["脅威モデリング", 60, ["STRIDEの6分類を調べる", "練習アプリの「守るべき資産」「外部からの入口」「想定される脅威」を表にする"], ["owasp"], "資産と入口を資料を見ずに言える"], ["振り返りと成果物", 90, ["OWASP Laravel Cheat Sheet を通読する", "脅威モデリングの表をテンプレートとしてリポジトリに置く", "ロードマップの到達チェックをつける"], ["lcs"], "テンプレートがリポジトリにある"], ["SQLインジェクション", 75, ["Web Security Academy に登録し、SQLiのApprenticeラボを2つ解く", "練習アプリで `whereRaw` への文字列連結を書いて攻撃を再現し、バインディングで直すPRを出す"], ["psg", "psa"], "修正PRが1件ある"], ["XSS", 75, ["反射型・格納型XSSのラボを解く", "Bladeの `{!! !!}` でXSSを再現し、`{{ }}` で直すPRを出す"], ["psa"], "`{!! !!}` がなぜ危険か説明できる"], ["CSRF", 60, ["CSRFのラボを1つ解く", "CSRF保護の除外設定で攻撃が通ることを確かめ、元に戻すPRを出す", "Cookieの `SameSite` の効き方を調べる"], ["psa", "lcsrf"], "CSRFトークンが何を防ぐか説明できる"], ["アクセス制御（IDOR）", 75, ["アクセス制御のラボを解く", "IDを書き換えて他人の注文を見られる状態を作り、Policyで直すPRを出す"], ["psa", "lauth"], "認可をPolicyに集める理由を説明できる"], ["Mass Assignment とファイルアップロード", 75, ["`$guarded = []` で権限フラグを書き換えられる状態を作り、`$fillable` と `$request->validated()` で直す", "アップロードの拡張子・MIME・保存先の検証を入れる"], ["lcs"], "修正PRが合計5件以上ある"], ["SSRF と依存関係", 60, ["SSRFの解説とラボを1つ", "`composer audit` を実行する", "徳丸本の後半から、ここまでの脆弱性の章を読む"], ["psa", "toku"], "既知の脆弱性がある依存を把握している"], ["振り返りと成果物", 90, ["チェックリストにアプリ層の項目を書く（脆弱な例と修正例のコードつき）", "到達チェックをつける"], [], "チェックリストのアプリ層が書けている"], ["OAuth 2.0 と OIDC", 60, ["認可コードフローとOIDCの違いを調べる", "ログインの流れを図に描く"], ["a0"], "フローを図で説明できる"], ["JWT検証の落とし穴", 60, ["IDトークンを分解して中身を見る", "署名・`iss`・`aud`・`exp` の検証がなぜ必要か整理する"], ["a0", "cog"], "JWT検証で確認すべき項目を言える"], ["Sanctum の API 認証", 75, ["練習アプリにSanctumを入れる", "トークンの有効期限と権限（abilities）を設定する"], ["lsanc"], "権限のないトークンで拒否されることを確認した"], ["レート制限とセッション", 60, ["ログインとパスワードリセットにレート制限を入れる", "セッションCookieの `secure`・`http_only`・`same_site` と有効期限を見直す"], ["lrate", "lcs"], "設定の1つひとつが何を防ぐか言える"], ["外部IdPとつなぐ", 75, ["Auth0かCognitoでOIDCログインをつなぐ", "IDトークンの検証が行われていることを確認する"], ["a0", "cog"], "外部IdPでログインできる"], ["AWS の最小権限とシークレット", 75, ["Well-Architectedのセキュリティの柱からIAMの章を読む", "練習アプリをAWSに置くと仮定し、最小権限のIAMポリシーとSecrets Managerでの管理を設計する"], ["waf"], "IAMポリシーの過剰な権限を指摘できる"], ["振り返りと成果物", 90, ["チェックリストに認証・クラウドの項目を書く", "到達チェックをつける"], [], "チェックリストの認証・クラウドが書けている"], ["サーバー堅牢化", 75, ["練習用のVPSかコンテナで、SSH鍵認証のみ・不要ポートの遮断・fail2ban・自動セキュリティ更新を設定する"], ["ipa20"], "手順をチェックリストにできる"], ["Laravel の本番設定", 60, ["`APP_DEBUG=false`、`APP_KEY` の管理、`.env` の置き場所、`storage` の権限を確認する", "設定キャッシュの使い方を確認する"], ["ldep", "lcs"], "本番で必ず確認する設定を言える"], ["Webサーバーとセキュリティヘッダー", 60, ["バージョン情報を隠す", "CSP・HSTSなどのセキュリティヘッダーを設定し、ブラウザの開発者ツールで確認する"], ["ipa20"], "各ヘッダーの役割を説明できる"], ["CIにスキャンを組み込む", 60, ["GitHub Actionsで `composer audit` とgitleaksを動かす", "Dependabotを有効にする"], [], "PRごとにスキャンが走る"], ["ログとバックアップ", 60, ["「漏れたかどうか」を後から判断するために残すログを決める", "バックアップを取り、実際にリストアしてみる"], ["ipa20"], "リストアが成功した"], ["インシデント対応", 60, ["個人情報保護委員会の漏えい等報告と注意喚起を読む", "最初の1時間の動き（止める・保全する・報告する）を手順書にする"], ["ppc", "ppc2"], "初動を手順書で説明できる"], ["仕上げと公開", 120, ["チェックリストにインフラ・運用の項目と初動手順を入れて完成させる", "練習アプリのREADMEを書き、リポジトリと記事を公開する", "チェックリストを `/security-check` Skillにする（Claude Codeのカリキュラムと共通）"], [], "成果物が公開されている"]]};
+const M = {"owasp": ["OWASP Top 10:2025（日本語版）", "https://owasp.org/Top10/2025/ja/"], "toku": ["徳丸本 第2版", "https://www.maruzenjunkudo.co.jp/products/9784797393163"], "ipa": ["IPA「安全なウェブサイトの作り方」", "https://www.ipa.go.jp/security/vuln/websecurity/about.html"], "lcs": ["OWASP Laravel Cheat Sheet", "https://cheatsheetseries.owasp.org/cheatsheets/Laravel_Cheat_Sheet.html"], "psg": ["Web Security Academy の始め方", "https://portswigger.net/web-security/getting-started"], "psa": ["Web Security Academy", "https://portswigger.net/web-security"], "lcsrf": ["Laravel：CSRF Protection", "https://laravel.com/docs/csrf"], "lauth": ["Laravel：Authorization", "https://laravel.com/docs/authorization"], "a0": ["Auth0：セキュリティ", "https://auth0.com/docs/ja-jp/secure"], "cog": ["Cognito セキュリティベストプラクティス", "https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/user-pool-security-best-practices.html"], "lsanc": ["Laravel：Sanctum", "https://laravel.com/docs/sanctum"], "lrate": ["Laravel：Rate Limiting", "https://laravel.com/docs/rate-limiting"], "waf": ["Well-Architected：セキュリティの柱", "https://docs.aws.amazon.com/ja_jp/wellarchitected/latest/security-pillar/welcome.html"], "ipa20": ["IPA 運用管理20ヶ条", "https://www.ipa.go.jp/security/vuln/websecurity/sitecheck.html"], "ldep": ["Laravel：Deployment", "https://laravel.com/docs/deployment"], "ppc": ["個人情報保護委員会「漏えい等報告」", "https://www.ppc.go.jp/personalinfo/legal/leakAction"], "ppc2": ["個人情報保護委員会 注意喚起（2026年10月）", "https://www.ppc.go.jp/files/pdf/261007_alert_dataleakage.pdf"]};
+const KEY = D.key;
+let state = { done:{}, start:"" };
+try{ const s = localStorage.getItem(KEY); if(s){ const p = JSON.parse(s); state = { done:p.done||{}, start:p.start||"" }; } }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+const WD = ["日","月","火","水","木","金","土"];
+
+function dateOf(i){
+  if(!state.start) return "";
+  const d = new Date(state.start+"T00:00:00"); d.setDate(d.getDate()+i);
+  return `${d.getMonth()+1}/${d.getDate()}（${WD[d.getDay()]}）`;
+}
+function render(){
+  document.getElementById("weeks").innerHTML = D.weeks.map(([wt,wc],w)=>`
+  <section class="week" id="w${w+1}" style="--c:var(${wc})">
+    <div class="week-head"><span class="n">${w+1}</span><div><small>Week ${w+1}・Day ${w*7+1}〜${w*7+7}</small><h2>${wt}</h2></div></div>
+    <ol class="days">${D.days.slice(w*7,w*7+7).map((d,k)=>{
+      const i = w*7+k, [t,min,todo,mats,goal] = d, rev = k===6;
+      return `<li class="day${rev?" review":""}" id="d${i+1}" data-i="${i}">
+        <div class="dnum">Day ${i+1}<small>約${min}分</small><small class="date">${dateOf(i)}</small>${rev?`<span class="tag">振り返り</span>`:""}</div>
+        <div>
+          <h3>${fmt(t)}</h3>
+          <ul class="todo">${todo.map(x=>`<li>${fmt(x)}</li>`).join("")}</ul>
+          ${mats.length?`<ul class="mats">${mats.map(m=>`<li><a href="${M[m][1]}" target="_blank" rel="noopener noreferrer">${fmt(M[m][0])}</a></li>`).join("")}</ul>`:""}
+          <p class="goalline"><b>できたら：</b>${fmt(goal)}</p>
+        </div>
+        <label class="check"><input type="checkbox" data-i="${i}" ${state.done[i]?"checked":""} aria-label="Day ${i+1}を完了にする">完了</label>
+      </li>`;}).join("")}</ol>
+  </section>`).join("");
+  document.getElementById("nav").innerHTML = D.weeks.map(([wt,wc],w)=>`<li><a href="#w${w+1}" style="--c:var(${wc})">Week ${w+1}<span class="bar"><i data-bar="${w}"></i></span></a></li>`).join("");
+  document.getElementById("track").innerHTML = D.weeks.map(([wt,wc],w)=>`<i data-seg="${w}" style="background:var(${wc})"></i>`).join("");
+  update();
+}
+function todayIndex(){
+  if(!state.start) return null;
+  const s = new Date(state.start+"T00:00:00"), t = new Date(); t.setHours(0,0,0,0);
+  return Math.floor((t - s)/86400000);
+}
+function update(){
+  let total = 0;
+  D.weeks.forEach((_,w)=>{
+    let n = 0; for(let k=0;k<7;k++){ if(state.done[w*7+k]) n++; }
+    total += n;
+    document.querySelector(`[data-bar="${w}"]`).style.width = (n/7*100)+"%";
+    document.querySelector(`[data-seg="${w}"]`).style.width = (n/28*100)+"%";
+  });
+  document.getElementById("cnt").textContent = `${total} / 28日`;
+  document.querySelectorAll(".day").forEach(el=>{
+    const i = +el.dataset.i;
+    el.classList.toggle("done", !!state.done[i]);
+    el.classList.remove("today");
+    el.querySelector(".date").textContent = dateOf(i);
+  });
+  const ti = todayIndex(), now = document.getElementById("now"), btn = document.getElementById("toToday");
+  btn.hidden = true;
+  if(ti === null){ now.textContent = "開始日を入れると、各日の日付と今日やることが表示されます。"; return; }
+  if(ti < 0){ now.innerHTML = `開始まであと <strong>${-ti}日</strong>。Day 1の教材を手元にそろえておきましょう。`; return; }
+  const next = D.days.findIndex((_,i)=>!state.done[i]);
+  if(ti > 27){ now.innerHTML = next<0 ? "28日分をすべて終えました。おつかれさまでした。" : `予定の28日を過ぎました。残りは <strong>Day ${next+1}</strong> からです。`; if(next>=0){ btn.hidden=false; btn.dataset.to=next+1; } return; }
+  document.getElementById("d"+(ti+1)).classList.add("today");
+  btn.hidden = false; btn.dataset.to = ti+1;
+  const behind = next>=0 && next < ti ? `　未完了は Day ${next+1} からです。` : "";
+  now.innerHTML = `今日は <strong>Day ${ti+1}</strong>「${fmt(D.days[ti][0])}」。${behind}`;
+}
+document.addEventListener("change", e=>{
+  const el = e.target;
+  if(el.matches('.check input')){ state.done[el.dataset.i] = el.checked; save(); update(); }
+  else if(el.id==="start"){ state.start = el.value; save(); update(); }
+});
+document.getElementById("toToday").addEventListener("click", e=>{
+  const t = document.getElementById("d"+e.currentTarget.dataset.to);
+  if(t) t.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"center"});
+});
+document.getElementById("reset").addEventListener("click", ()=>{
+  if(!confirm("完了の記録と開始日をすべて消します。よろしいですか？")) return;
+  state = { done:{}, start:"" }; save();
+  document.getElementById("start").value = ""; render();
+});
+document.getElementById("start").value = state.start;
+render();
+</script>
+</body>
+</html>

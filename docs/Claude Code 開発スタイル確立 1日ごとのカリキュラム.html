@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Claude Code 開発スタイル確立 1日ごとのカリキュラム</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --ink:#17222E; --muted:#5B6878; --line:#D3DAE2; --track:#DCE2E9;
+  --w1:#3D6FA8; --w2:#2A857C; --w3:#7556B0; --w4:#B8730E;
+  --radius-lg:18px; --radius-sm:8px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A23; --surface:#1A2430; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2C3946; --track:#273340;
+    --w1:#6FA0D8; --w2:#4FB8AD; --w3:#A68BDB; --w4:#E3A23F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A23; --surface:#1A2430; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2C3946; --track:#273340;
+  --w1:#6FA0D8; --w2:#4FB8AD; --w3:#A68BDB; --w4:#E3A23F;
+  color-scheme: dark;
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+*,*::before,*::after{ box-sizing:inherit; }
+html{ scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px); }
+body{ margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+  font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased; }
+body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--bg); }
+code{ font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; font-size:.86em; background:var(--track); padding:.05em .35em; border-radius:4px; word-break:break-all; }
+a{ color:inherit; }
+:focus-visible{ outline:3px solid var(--w1); outline-offset:3px; border-radius:4px; }
+.wrap{ max-width:920px; margin:0 auto; padding:0 24px; }
+
+header{ padding:48px 0 32px; }
+.back{ display:inline-block; font-size:.875rem; font-weight:700; color:var(--muted); text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:3px 14px; margin-bottom:20px; }
+.back:hover{ color:var(--ink); background:var(--surface); }
+h1{ font-size:clamp(1.625rem,3.6vw,2.375rem); line-height:1.35; font-weight:900; margin:0 0 14px; }
+.lead{ color:var(--muted); margin:0 0 24px; max-width:40em; }
+.status{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:18px 22px; display:grid; gap:12px; }
+.status-row{ display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; }
+.status label{ font-weight:700; font-size:.9375rem; }
+.status input[type=date]{ font:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:var(--radius-sm); padding:5px 10px; }
+.status .now{ margin:0; }
+.status .now strong{ font-weight:900; }
+.prog{ display:flex; align-items:center; gap:14px; font-size:.9375rem; }
+.prog .track{ flex:1; height:8px; border-radius:4px; background:var(--track); overflow:hidden; display:flex; }
+.prog .track i{ display:block; height:100%; transition:width .5s ease; }
+.prog span{ font-variant-numeric:tabular-nums; white-space:nowrap; }
+.today-btn{ font:inherit; font-weight:700; font-size:.875rem; color:var(--surface); background:var(--ink); border:0; border-radius:999px; padding:5px 16px; cursor:pointer; }
+.today-btn[hidden]{ display:none; }
+
+.weeknav{ position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line); }
+.weeknav ol{ list-style:none; margin:0 auto; padding:10px 24px; max-width:920px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.weeknav a{ display:block; text-decoration:none; padding:6px 10px 8px; border-radius:var(--radius-sm); font-size:.8125rem; font-weight:700; }
+.weeknav a:hover{ background:var(--surface); }
+.weeknav .bar{ display:block; height:4px; border-radius:2px; background:var(--track); margin-top:5px; overflow:hidden; }
+.weeknav .bar i{ display:block; height:100%; width:0; background:var(--c); transition:width .5s ease; }
+
+main{ padding:8px 0 64px; }
+.week{ padding:40px 0 8px; }
+.week-head{ display:flex; align-items:baseline; gap:14px; margin:0 0 18px; }
+.week-head .n{ font-size:2.75rem; font-weight:900; line-height:1; color:var(--c); }
+.week-head h2{ font-size:1.25rem; font-weight:900; margin:0; line-height:1.4; }
+.week-head small{ display:block; font-size:.8125rem; color:var(--muted); font-weight:700; }
+
+.days{ list-style:none; margin:0; padding:0; border-left:3px solid var(--c); }
+.day{ position:relative; display:grid; grid-template-columns:92px 1fr auto; gap:0 20px; padding:18px 0 18px 20px; border-bottom:1px solid var(--line); }
+.day:last-child{ border-bottom:0; }
+.day::before{ content:""; position:absolute; left:-9px; top:26px; width:15px; height:15px; border-radius:50%; background:var(--bg); border:3px solid var(--c); }
+.day.done::before{ background:var(--c); }
+.day.review{ background:color-mix(in srgb, var(--c) 7%, transparent); }
+.day.today{ background:var(--surface); box-shadow:inset 0 0 0 2px var(--c); border-radius:var(--radius-sm); }
+.dnum{ font-weight:900; font-size:1.125rem; line-height:1.3; }
+.dnum small{ display:block; font-size:.8125rem; font-weight:700; color:var(--muted); }
+.dnum .tag{ display:inline-block; margin-top:6px; font-size:.75rem; font-weight:900; color:var(--surface); background:var(--c); border-radius:999px; padding:1px 10px; }
+.day h3{ font-size:1.0625rem; font-weight:900; margin:0 0 6px; line-height:1.5; }
+.day ul.todo{ margin:0 0 8px; padding-left:1.15em; }
+.day ul.todo li{ margin:0 0 4px; }
+.day ul.todo li::marker{ color:var(--c); }
+.mats{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 6px; padding:0; list-style:none; }
+.mats a{ display:inline-block; font-size:.8125rem; font-weight:500; text-decoration:none; border:1px solid var(--line); background:var(--surface); border-radius:var(--radius-sm); padding:2px 10px; }
+.mats a:hover{ border-color:var(--c); color:var(--c); }
+.goalline{ margin:0; font-size:.875rem; color:var(--muted); }
+.goalline b{ color:var(--ink); font-weight:700; }
+.check{ display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; font-size:.75rem; font-weight:700; color:var(--muted); padding-top:2px; }
+.check input{ appearance:none; -webkit-appearance:none; width:28px; height:28px; margin:0; border:2px solid var(--line); border-radius:8px; background:var(--bg); display:grid; place-content:center; cursor:pointer; transition:background .15s,border-color .15s; }
+.check input::after{ content:""; width:13px; height:7px; border-left:3px solid var(--surface); border-bottom:3px solid var(--surface); transform:rotate(-45deg) translate(1px,-1px); opacity:0; }
+.check input:checked{ background:var(--c); border-color:var(--c); }
+.check input:checked::after{ opacity:1; }
+.day.done h3, .day.done ul.todo{ color:var(--muted); }
+
+footer{ border-top:1px solid var(--line); padding:24px 0 40px; color:var(--muted); font-size:.875rem; }
+footer button{ font:inherit; color:var(--muted); background:none; border:1px solid var(--line); border-radius:var(--radius-sm); padding:4px 12px; cursor:pointer; }
+footer button:hover{ color:var(--ink); }
+
+@media (max-width:640px){
+  .wrap{ padding:0 16px; }
+  .weeknav ol{ padding:8px 12px; gap:4px; }
+  .weeknav a{ padding:4px 6px 6px; font-size:.75rem; }
+  .day{ grid-template-columns:1fr auto; padding-left:16px; }
+  .dnum{ grid-column:1 / -1; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; margin-bottom:4px; }
+  .dnum small{ display:inline; }
+  .dnum .tag{ margin-top:0; }
+  .day > div:nth-child(2){ grid-column:1; }
+}
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{ transition:none !important; } }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <a class="back" href="https://claude.ai/artifact/A5rU7edv7UDtKMdHCJkZXY" target="_blank" rel="noopener noreferrer">ロードマップを開く</a>
+  <h1>Claude Code 開発スタイル確立 1日ごとのカリキュラム</h1>
+  <p class="lead">ロードマップの各週を、1日あたり約60分の作業に分けました。題材はセキュリティのカリキュラムと同じ練習用Laravelアプリです。7日目ごとは振り返りと成果物づくりの日です。</p>
+  <div class="status">
+    <div class="status-row">
+      <label for="start">開始日</label>
+      <input type="date" id="start">
+      <button type="button" class="today-btn" id="toToday" hidden>今日の内容へ</button>
+    </div>
+    <p class="now" id="now"></p>
+    <div class="prog"><div class="track" id="track"></div><span id="cnt">0 / 28日</span></div>
+  </div>
+</header>
+<nav class="weeknav" aria-label="週の切り替え"><ol id="nav"></ol></nav>
+<main class="wrap" id="weeks"></main>
+<footer class="wrap">
+  <p>完了の状態と開始日は、このブラウザにだけ保存されます。ロードマップのページとは別に保存されるので、開始日はこちらでも入れてください。</p>
+  <button type="button" id="reset">完了と開始日をリセット</button>
+</footer>
+<script>
+const D = {"key": "cc-curriculum-v1", "weeks": [["エージェントの仕組みとコンテキスト", "--w1"], ["明文化と仕様駆動の再設計", "--w2"], ["検証と自動化", "--w3"], ["委任・リスク・配布", "--w4"]], "days": [["エージェントとは何か", 60, ["Building effective agents を読む", "「エージェントとは何か」を1文で書く"], ["bea"], "エージェントの定義を1文で言える"], ["Claude Code の全体像", 60, ["How Claude Code works と機能の全体像のページを読む", "機能ごとに「何の問題を解くか」を自分の表にまとめる"], ["hcw", "fo"], "機能ごとの役割を表で説明できる"], ["コンテキストエンジニアリング", 75, ["Effective context engineering を読む", "`/context` で、今のセッションが何にコンテキストを使っているか見る", "A4メモ「入れるもの・入れないもの」を書き始める"], ["ece", "cw"], "context rot を説明できる"], ["練習アプリに Boost を入れる", 60, ["練習アプリ（セキュリティのカリキュラムのDay 4で作るもの）に Laravel Boost を入れる", "生成されたCLAUDE.mdとガイドラインを読む"], ["boost"], "Boostが何を生成したか説明できる"], ["基本操作を体で覚える", 60, ["小さな修正を題材に、Plan Mode・権限の承認・`/clear`・`/compact`・巻き戻しを一通り使う"], ["hcw"], "5つの操作を迷わず使える"], ["指示の置き場所とモデル", 75, ["CLAUDE.mdとOutput stylesのページを読む", "ディレクトリ固有のルールを `.claude/rules/` に切り出す", "同じタスクをSonnetとOpusで試し、差をメモする"], ["mem", "os"], "指示をどこに置くか判断できる"], ["振り返りと成果物", 90, ["A4メモを仕上げる", "CLAUDE.mdと `.claude/rules/` のテンプレートを開発キットのリポジトリに置く", "公式Docsの機能一覧で新機能を確認し、到達チェックをつける"], ["fo"], "テンプレートがリポジトリにある"], ["使い分けの判断軸", 60, ["Steering Claude Code と Best practices のブログを読む", "今の `/spec-*` の各工程を、どの機能に置くべきか書き出す"], ["steer", "bp"], "再設計の方針が決まっている"], ["spec-design を Skill にする", 75, ["Skillsのページを読む", "`/spec-design` をSkillとして書き直す"], ["skills"], "`/spec-design` がSkillとして動く"], ["残りの spec を Skill にする", 75, ["`/spec-tasks` と `/spec-implement` をSkill化する", "副作用のあるスキルに `disable-model-invocation: true` を設定する"], ["skills"], "3つのSkillがそろう"], ["Subagents を定義する", 75, ["Subagentsのページを読む", "既存コード調査用とレビュー用のSubagentを作る"], ["sub"], "調査の結果が要約だけで戻ってくる"], ["既存のスキルと規模別ルール", 60, ["組み込みスキルとBoostのスキルを試し、自作Skillとの重なりを整理する", "タスク規模別の運用ルール（小・中・大）を決める"], ["cmds", "boost"], "規模別ルールが書けている"], ["新ワークフローで機能を作る", 90, ["練習アプリに「注文のキャンセル」機能を、specワークフローで設計から実装まで作る"], [], "機能追加が完了している"], ["振り返りと成果物", 90, ["Skills と Subagents を開発キットのリポジトリに入れる", "新機能を確認し、到達チェックをつける"], ["fo"], "Week 2の部品がリポジトリにある"], ["Hooks の仕組み", 60, ["Hooksガイドを読み、ライフサイクルイベントを整理する", "表「プロンプトに残すもの／Hookに寄せるもの」を書き始める"], ["hooks"], "要求と保証の違いを説明できる"], ["整形と静的解析の Hook", 60, ["編集のたびにPintとLarastanを走らせるHookを入れる"], ["hooks"], "編集後に自動で整形と解析が走る"], ["テストとガードレールの Hook", 75, ["完了前にPestを走らせるHookを入れる", "`.env` の編集を `PreToolUse` Hookでブロックする"], ["hooks"], "`.env` の編集が拒否される"], ["自己修正ループを作る", 60, ["`/spec-implement` に完了条件（検証ステップ）を入れる", "わざとテストを壊し、Claudeが自分で直すか確かめる"], [], "テスト失敗からの自己修正が回る"], ["MCP と Boost", 60, ["MCPのページを読む", "BoostのMCPサーバーをつなぎ、DBスキーマとエラーログをClaudeに確かめさせる"], ["mcp", "boost"], "ClaudeがDBスキーマを自分で調べられる"], ["Code intelligence とツール設計", 60, ["PHP用のcode intelligenceプラグインを入れ、導入前後で `/context` を比べる", "Writing effective tools for agents を読む"], ["ci", "wt"], "導入前後の差を数字で言える"], ["振り返りと成果物", 90, ["Hooks と判断表を開発キットのリポジトリに入れる", "新機能を確認し、到達チェックをつける"], ["fo"], "Week 3の部品がリポジトリにある"], ["権限とリスク", 60, ["セキュリティと権限のページを読む", "自分の権限設定を見直す", "BoostのTinkerなど、任意のコードを実行できるツールの扱いを決める"], ["sec", "perm"], "Claudeに許している範囲を説明できる"], ["並列で進める", 60, ["git worktreeで2つのタスクを同時に進める"], ["agents"], "2つの作業が衝突せずに終わる"], ["非対話実行と GitHub Actions", 75, ["`claude -p` で定型作業（PRの要約など）を1つ自動化する", "GitHub Actionsを入れ、PRで `@claude` を試す"], ["gha"], "定型作業が1つ自動化されている"], ["Dynamic workflows と連携", 60, ["Dynamic workflowsとCross-session messagingのページを読む", "小さな監査（未使用コードの洗い出しなど）を1回試す"], ["wf", "xs"], "監査の結果が1つの報告にまとまる"], ["Plugin にまとめる", 90, ["Pluginsのページを読む", "Week 1〜3の成果をPluginにまとめ、別のリポジトリに入れて動作を確かめる", "配布時にPluginに入れるもの・各自に任せるものを決める"], ["plug", "mkt"], "別リポジトリで同じワークフローが動く"], ["計測と記事の下書き", 75, ["Week 1と比べた変化を1つの指標で測る（手で直した回数、待ち時間など）", "記事の下書きを書く", "Effective harnesses を読む"], ["harn"], "記事の下書きがある"], ["仕上げと公開", 120, ["「自分のAI開発原則」10行を書き、READMEに載せる", "開発キットのリポジトリと記事を公開する", "セキュリティのカリキュラムで作る `/security-check` Skillを開発キットに入れる"], [], "成果物が公開されている"]]};
+const M = {"bea": ["Building effective agents", "https://www.anthropic.com/engineering/building-effective-agents"], "hcw": ["How Claude Code works", "https://code.claude.com/docs/ja/how-claude-code-works"], "fo": ["Claude Code を拡張する（機能の全体像）", "https://code.claude.com/docs/ja/features-overview"], "ece": ["Effective context engineering for AI agents", "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"], "cw": ["コンテキストウィンドウを探索する", "https://code.claude.com/docs/ja/context-window"], "boost": ["Laravel Boost", "https://laravel.com/docs/13.x/boost"], "mem": ["CLAUDE.md（メモリ）", "https://code.claude.com/docs/ja/memory"], "os": ["Output styles", "https://code.claude.com/docs/ja/output-styles"], "steer": ["Steering Claude Code（ブログ）", "https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more"], "bp": ["Claude Code: Best practices for agentic coding", "https://www.anthropic.com/engineering/claude-code-best-practices"], "skills": ["Skills", "https://code.claude.com/docs/ja/skills"], "sub": ["Subagents", "https://code.claude.com/docs/ja/sub-agents"], "cmds": ["コマンドと組み込みスキル", "https://code.claude.com/docs/ja/commands"], "hooks": ["Hooks ガイド", "https://code.claude.com/docs/ja/hooks-guide"], "mcp": ["MCP", "https://code.claude.com/docs/ja/mcp"], "ci": ["Code intelligence プラグイン", "https://code.claude.com/docs/ja/plugins/code-intelligence"], "wt": ["Writing effective tools for agents", "https://www.anthropic.com/engineering/writing-tools-for-agents"], "sec": ["Claude Code：セキュリティ", "https://code.claude.com/docs/ja/security"], "perm": ["Claude Code：権限", "https://code.claude.com/docs/ja/permissions"], "agents": ["複数のClaudeを並列で実行する", "https://code.claude.com/docs/ja/agents"], "gha": ["Claude Code GitHub Actions", "https://code.claude.com/docs/ja/github-actions"], "wf": ["Dynamic workflows", "https://code.claude.com/docs/ja/workflows"], "xs": ["Cross-session messaging", "https://code.claude.com/docs/ja/cross-session-messaging"], "plug": ["Plugins", "https://code.claude.com/docs/ja/plugins/overview"], "mkt": ["Marketplace を作る", "https://code.claude.com/docs/ja/plugins/create-marketplace"], "harn": ["Effective harnesses for long-running agents", "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"]};
+const KEY = D.key;
+let state = { done:{}, start:"" };
+try{ const s = localStorage.getItem(KEY); if(s){ const p = JSON.parse(s); state = { done:p.done||{}, start:p.start||"" }; } }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+const WD = ["日","月","火","水","木","金","土"];
+
+function dateOf(i){
+  if(!state.start) return "";
+  const d = new Date(state.start+"T00:00:00"); d.setDate(d.getDate()+i);
+  return `${d.getMonth()+1}/${d.getDate()}（${WD[d.getDay()]}）`;
+}
+function render(){
+  document.getElementById("weeks").innerHTML = D.weeks.map(([wt,wc],w)=>`
+  <section class="week" id="w${w+1}" style="--c:var(${wc})">
+    <div class="week-head"><span class="n">${w+1}</span><div><small>Week ${w+1}・Day ${w*7+1}〜${w*7+7}</small><h2>${wt}</h2></div></div>
+    <ol class="days">${D.days.slice(w*7,w*7+7).map((d,k)=>{
+      const i = w*7+k, [t,min,todo,mats,goal] = d, rev = k===6;
+      return `<li class="day${rev?" review":""}" id="d${i+1}" data-i="${i}">
+        <div class="dnum">Day ${i+1}<small>約${min}分</small><small class="date">${dateOf(i)}</small>${rev?`<span class="tag">振り返り</span>`:""}</div>
+        <div>
+          <h3>${fmt(t)}</h3>
+          <ul class="todo">${todo.map(x=>`<li>${fmt(x)}</li>`).join("")}</ul>
+          ${mats.length?`<ul class="mats">${mats.map(m=>`<li><a href="${M[m][1]}" target="_blank" rel="noopener noreferrer">${fmt(M[m][0])}</a></li>`).join("")}</ul>`:""}
+          <p class="goalline"><b>できたら：</b>${fmt(goal)}</p>
+        </div>
+        <label class="check"><input type="checkbox" data-i="${i}" ${state.done[i]?"checked":""} aria-label="Day ${i+1}を完了にする">完了</label>
+      </li>`;}).join("")}</ol>
+  </section>`).join("");
+  document.getElementById("nav").innerHTML = D.weeks.map(([wt,wc],w)=>`<li><a href="#w${w+1}" style="--c:var(${wc})">Week ${w+1}<span class="bar"><i data-bar="${w}"></i></span></a></li>`).join("");
+  document.getElementById("track").innerHTML = D.weeks.map(([wt,wc],w)=>`<i data-seg="${w}" style="background:var(${wc})"></i>`).join("");
+  update();
+}
+function todayIndex(){
+  if(!state.start) return null;
+  const s = new Date(state.start+"T00:00:00"), t = new Date(); t.setHours(0,0,0,0);
+  return Math.floor((t - s)/86400000);
+}
+function update(){
+  let total = 0;
+  D.weeks.forEach((_,w)=>{
+    let n = 0; for(let k=0;k<7;k++){ if(state.done[w*7+k]) n++; }
+    total += n;
+    document.querySelector(`[data-bar="${w}"]`).style.width = (n/7*100)+"%";
+    document.querySelector(`[data-seg="${w}"]`).style.width = (n/28*100)+"%";
+  });
+  document.getElementById("cnt").textContent = `${total} / 28日`;
+  document.querySelectorAll(".day").forEach(el=>{
+    const i = +el.dataset.i;
+    el.classList.toggle("done", !!state.done[i]);
+    el.classList.remove("today");
+    el.querySelector(".date").textContent = dateOf(i);
+  });
+  const ti = todayIndex(), now = document.getElementById("now"), btn = document.getElementById("toToday");
+  btn.hidden = true;
+  if(ti === null){ now.textContent = "開始日を入れると、各日の日付と今日やることが表示されます。"; return; }
+  if(ti < 0){ now.innerHTML = `開始まであと <strong>${-ti}日</strong>。Day 1の教材を手元にそろえておきましょう。`; return; }
+  const next = D.days.findIndex((_,i)=>!state.done[i]);
+  if(ti > 27){ now.innerHTML = next<0 ? "28日分をすべて終えました。おつかれさまでした。" : `予定の28日を過ぎました。残りは <strong>Day ${next+1}</strong> からです。`; if(next>=0){ btn.hidden=false; btn.dataset.to=next+1; } return; }
+  document.getElementById("d"+(ti+1)).classList.add("today");
+  btn.hidden = false; btn.dataset.to = ti+1;
+  const behind = next>=0 && next < ti ? `　未完了は Day ${next+1} からです。` : "";
+  now.innerHTML = `今日は <strong>Day ${ti+1}</strong>「${fmt(D.days[ti][0])}」。${behind}`;
+}
+document.addEventListener("change", e=>{
+  const el = e.target;
+  if(el.matches('.check input')){ state.done[el.dataset.i] = el.checked; save(); update(); }
+  else if(el.id==="start"){ state.start = el.value; save(); update(); }
+});
+document.getElementById("toToday").addEventListener("click", e=>{
+  const t = document.getElementById("d"+e.currentTarget.dataset.to);
+  if(t) t.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"center"});
+});
+document.getElementById("reset").addEventListener("click", ()=>{
+  if(!confirm("完了の記録と開始日をすべて消します。よろしいですか？")) return;
+  state = { done:{}, start:"" }; save();
+  document.getElementById("start").value = ""; render();
+});
+document.getElementById("start").value = state.start;
+render();
+</script>
+</body>
+</html>
