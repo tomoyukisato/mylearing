@@ -67,6 +67,19 @@ a{ color:inherit; }
 .legend .lp{ margin-left:auto; color:var(--muted); font-variant-numeric:tabular-nums; }
 .rings-note{ font-size:.8125rem; color:var(--muted); margin:10px 0 0; text-align:center; }
 
+/* Deliverables */
+.deliv{ padding:0 0 40px; }
+.deliv h2{ font-size:1.125rem; font-weight:900; margin:0 0 4px; }
+.deliv .sub{ margin:0 0 16px; }
+.deliv-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.deliv-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:20px 22px; }
+.deliv-card strong{ display:block; font-size:1.0625rem; line-height:1.5; margin-bottom:6px; }
+.deliv-card p{ margin:0; color:var(--muted); font-size:.9375rem; }
+.deliv-card .pieces{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; padding:0; list-style:none; }
+.deliv-card .pieces li{ font-size:.75rem; font-weight:700; padding:2px 10px; border-radius:999px; border:1.5px solid var(--c); color:var(--c); }
+.checks.parts label{ border-style:dashed; }
+@media (max-width:860px){ .deliv-grid{ grid-template-columns:1fr; } }
+
 /* Week nav */
 .weeknav{ position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line); }
 .weeknav ol{ list-style:none; margin:0 auto; padding:10px 24px; max-width:1080px; display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
@@ -147,7 +160,7 @@ footer button:hover{ color:var(--ink); }
 <header class="wrap hero">
   <div>
     <h1>セキュリティ強化<br>1ヶ月ロードマップ</h1>
-    <p class="lead">1ヶ月後、設計やレビューの場で、言われる前に自分からセキュリティの観点を挙げられるようになる。チェックを入れるたびに、守りの層が1枚ずつ厚くなっていきます。</p>
+    <p class="lead">1ヶ月後、設計やレビューの場で、言われる前に自分からセキュリティの観点を挙げられるようになる。練習用のLaravelアプリを題材に、チェックを入れるたびに守りの層が1枚ずつ厚くなり、最後は人に見せられる成果物が手元に残ります。</p>
     <div class="status">
       <div class="status-row">
         <label for="start">開始日</label>
@@ -170,6 +183,23 @@ footer button:hover{ color:var(--ink); }
   </div>
 </header>
 
+<section class="wrap deliv" aria-labelledby="delivTitle">
+  <h2 id="delivTitle">1ヶ月後にできあがるもの</h2>
+  <p class="sub">各週の点線の項目が、この2つの部品として積み上がっていきます</p>
+  <div class="deliv-grid">
+    <div class="deliv-card">
+      <strong>練習用Laravelアプリのリポジトリ</strong>
+      <p>脆弱な実装と、その修正を1件ずつPRで残したもの。どこが危険で、どう直したかを履歴で説明できます。</p>
+      <ul class="pieces"><li style="--c:var(--w2)">アプリ層の修正PR</li><li style="--c:var(--w3)">認証・トークン</li><li style="--c:var(--w4)">本番設定とCI</li></ul>
+    </div>
+    <div class="deliv-card">
+      <strong>Laravel開発者のためのセキュリティチェックリスト</strong>
+      <p>4つの層ごとの確認項目に、脆弱な例と修正例のコードを添えたもの。記事かリポジトリとして公開します。</p>
+      <ul class="pieces"><li style="--c:var(--w1)">脅威モデリング</li><li style="--c:var(--w2)">アプリ</li><li style="--c:var(--w3)">認証・クラウド</li><li style="--c:var(--w4)">インフラ・運用</li></ul>
+    </div>
+  </div>
+</section>
+
 <nav class="weeknav" aria-label="週の切り替え"><ol id="nav"></ol></nav>
 
 <main class="wrap" id="weeks"></main>
@@ -187,51 +217,64 @@ const WEEKS = [
     learn:["情報漏洩の典型パターン：脆弱性の悪用、認証情報の漏洩、設定ミス、内部不正、委託先経由、サプライチェーン","OWASP Top 10:2025の各項目が何を指し、なぜ起きるのか","脅威モデリング（STRIDE）：何を守るか、誰が狙うか、どこが入口か"],
     mats:[
       {t:"OWASP Top 10:2025（日本語版）", u:"https://owasp.org/Top10/2025/ja/", n:"無料・Web"},
+      {t:"OWASP Laravel Cheat Sheet", u:"https://cheatsheetseries.owasp.org/cheatsheets/Laravel_Cheat_Sheet.html", n:"無料・英語／Laravel固有の落とし穴の全体像"},
       {t:"IPA「安全なウェブサイトの作り方」", u:"https://www.ipa.go.jp/security/vuln/websecurity/about.html", n:"無料PDF"},
       {t:"徳丸浩『体系的に学ぶ 安全なWebアプリケーションの作り方 第2版』の前半", u:"https://www.maruzenjunkudo.co.jp/products/9784797393163", n:"書籍"},
       {t:"徳丸本 第3版の改訂ポイント（@IT）", u:"https://atmarkit.itmedia.co.jp/ait/articles/2608/28/news018.html", n:"参考記事"}
     ],
-    tasks:["担当システムごとに「守るべき資産（会員情報・注文・決済まわり・管理画面）」と「外部からの入口」を1枚に書き出す"],
-    checks:["OWASP Top 10の各項目を、具体例つきで1文ずつ説明できる","担当システムの守るべき資産と入口を、資料を見ずに説明できる","実際の漏洩事例を1件読み、侵入経路と原因を分類できる"] },
+    taskTitle:"練習アプリでやること",
+    tasks:["練習用Laravelアプリの題材を決めて雛形を作る（例：会員登録・注文・マイページ・管理画面・ファイルアップロードを持つ小さなEC）","そのアプリの「守るべき資産」と「外部からの入口」を1枚に書き出す"],
+    parts:["脅威モデリングのテンプレート（資産・入口・想定される脅威の表）をリポジトリに置く"],
+    checks:["OWASP Top 10の各項目を、具体例つきで1文ずつ説明できる","練習アプリの守るべき資産と入口を、資料を見ずに説明できる","実際の漏洩事例を1件読み、侵入経路と原因を分類できる"] },
   { id:"w2", color:"--w2", label:"Week 2", short:"Webアプリ", layer:"アプリ",
     title:"Webアプリの脆弱性を手を動かして理解する",
-    goal:"コードレビューやプルリクエストで、XSS・SQLインジェクション・IDORの危険箇所に気づき、なぜ危険か、どう直すかを説明できる。",
-    learn:["SQLインジェクション、XSS、CSRF、アクセス制御の不備（IDOR）、SSRF、ファイルアップロードの脆弱性","攻撃が成立する様子を自分で再現し、手触りで理解する"],
+    goal:"コードレビューやプルリクエストで、XSS・SQLインジェクション・IDOR・Mass Assignmentの危険箇所に気づき、なぜ危険か、どう直すかを説明できる。",
+    learn:["SQLインジェクション、XSS、CSRF、アクセス制御の不備（IDOR）、Mass Assignment、SSRF、ファイルアップロードの脆弱性","Laravelの標準の防御（Eloquentのバインディング、Bladeの自動エスケープ、CSRFトークン、Policy）がどこで効き、どこで外れるか","攻撃が成立する様子を自分で再現し、手触りで理解する"],
     mats:[
       {t:"PortSwigger Web Security Academy", u:"https://portswigger.net/web-security", n:"無料ハンズオン・英語"},
       {t:"Web Security Academy の始め方", u:"https://portswigger.net/web-security/getting-started", n:"どこから解くかの道順"},
+      {t:"Laravel 公式：Authorization（Gate・Policy）", u:"https://laravel.com/docs/authorization", n:"公式Docs・英語"},
+      {t:"Laravel 公式：CSRF Protection", u:"https://laravel.com/docs/csrf", n:"公式Docs・英語"},
       {t:"徳丸本の後半", u:"https://www.maruzenjunkudo.co.jp/products/9784797393163", n:"書籍"}
     ],
-    taskTitle:"EC-CUBE / Symfony でやること",
-    tasks:["Twigの自動エスケープを外している箇所（`|raw`）がないか確認する","Doctrineでの生SQL・文字列連結クエリを洗い出す","他人の注文やお届け先をIDの書き換えで見られないか、マイページ系の認可チェックを確認する","独自プラグインとカスタマイズ部分をレビューする","`composer audit` で既知の脆弱性がある依存パッケージを確認する"],
-    checks:["Web Security Academy の Apprentice ラボ（SQLi、XSS、アクセス制御）を、解説を見ずに解ける","「Twigの `|raw` がなぜ危険か」「なぜプレースホルダを使うのか」を後輩に説明できる","EC-CUBEのレビュー結果が「問題なし／要確認／要修正」のリストになっている"] },
+    taskTitle:"Laravelでやること",
+    warn:"わざと脆弱な実装を書き、攻撃が成立することを確かめてから直します。1つの脆弱性につき1つのPRにすると、そのまま成果物の履歴になります。",
+    tasks:["`whereRaw` や `DB::raw` への文字列連結でSQLインジェクションを再現し、バインディングで直す","Bladeの `{!! !!}` でXSSを再現し、`{{ }}` とサニタイズで直す","他人の注文をIDの書き換えで見られる状態を作り、Policyで直す","`$guarded = []` で権限フラグを書き換えられる状態を作り、`$fillable` と `$request->validated()` で直す","ファイルアップロードの拡張子・MIME・保存先の検証を入れる","`composer audit` で既知の脆弱性がある依存パッケージを確認する"],
+    parts:["チェックリストにアプリ層の項目を追加する（脆弱な例と修正例のコードつき）"],
+    checks:["Web Security Academy の Apprentice ラボ（SQLi、XSS、アクセス制御）を、解説を見ずに解ける","「Bladeの `{!! !!}` がなぜ危険か」「なぜ認可をPolicyに集めるのか」を後輩に説明できる","脆弱→修正のPRが5件以上そろっている"] },
   { id:"w3", color:"--w3", label:"Week 3", short:"認証・クラウド", layer:"認証",
     title:"認証・認可とクラウドの設定ミスを潰す",
     goal:"認証まわりの設計やクラウドの設定画面を見て、「この設定は危ない」「この権限は広すぎる」と判断できる。",
-    learn:["OAuth 2.0 / OIDC のフロー、JWT検証の落とし穴（署名未検証、`aud`/`iss` 未チェック、有効期限が長すぎる）","リフレッシュトークンのローテーション、MFA、ブルートフォース対策","AWSの最小権限IAM、シークレット管理、公開設定ミス"],
+    learn:["OAuth 2.0 / OIDC のフロー、JWT検証の落とし穴（署名未検証、`aud`/`iss` 未チェック、有効期限が長すぎる）","Laravel側の守り：Sanctumのトークン、ログイン試行のレート制限、セッションCookieの設定（`secure`・`http_only`・`same_site`）","AWSの最小権限IAM、シークレット管理、公開設定ミス"],
     mats:[
+      {t:"Laravel 公式：Sanctum", u:"https://laravel.com/docs/sanctum", n:"公式Docs・英語"},
+      {t:"Laravel 公式：Rate Limiting", u:"https://laravel.com/docs/rate-limiting", n:"公式Docs・英語"},
       {t:"Auth0 ドキュメント：セキュリティ", u:"https://auth0.com/docs/ja-jp/secure", n:"攻撃防御・トークン・MFA"},
-      {t:"Auth0 テナントのセキュリティ強化ガイド", u:"https://auth0.com/blog/comprehensive-guide-auth0-security-identity-attacks/", n:"英語ブログ"},
       {t:"Amazon Cognito ユーザープールのセキュリティベストプラクティス", u:"https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/user-pool-security-best-practices.html", n:"公式ドキュメント"},
       {t:"AWS Well-Architected フレームワーク：セキュリティの柱", u:"https://docs.aws.amazon.com/ja_jp/wellarchitected/latest/security-pillar/welcome.html", n:"公式ホワイトペーパー"}
     ],
-    tasks:["Auth0 / Cognito のトークン有効期限、MFA設定、許可しているコールバックURL、不要なアプリ連携を棚卸しする","契約管理サービスで、API Gatewayのオーソライザーが全エンドポイントを保護しているか、Lambdaの実行ロールが広すぎないかを確認する","シークレットがコードやAmplifyの環境変数に平文で置かれていないか確認する（Secrets Manager / SSMへの移行を検討）","`npm audit` を実行し、Dependabotを有効にする"],
-    checks:["OIDCのログインフローを図に描いて説明でき、JWT検証で必ず確認すべき項目を言える","Lambdaの実行ロールやIAMポリシーを読んで、過剰な権限を指摘できる","Auth0 / Cognito とAWSの設定棚卸しの結果がまとまっている"] },
+    taskTitle:"練習アプリでやること",
+    tasks:["SanctumでAPI認証を入れ、トークンの有効期限と権限（abilities）を設定する","ログインとパスワードリセットにレート制限を入れる","セッションCookieの設定と有効期限を見直す","Auth0かCognitoでOIDCログインをつなぎ、IDトークンの `iss`・`aud`・`exp` の検証を確認する","AWSに置くと仮定して、最小権限のIAMポリシーとSecrets Managerでの秘密情報管理を設計する"],
+    parts:["チェックリストに認証・クラウドの項目を追加する"],
+    checks:["OIDCのログインフローを図に描いて説明でき、JWT検証で必ず確認すべき項目を言える","IAMポリシーを読んで、過剰な権限を指摘できる","Laravelのセッションとトークンの設定が、それぞれ何を防ぐのか説明できる"] },
   { id:"w4", color:"--w4", label:"Week 4", short:"インフラ・運用", layer:"インフラ",
     title:"インフラ・運用・インシデント対応",
     goal:"サーバーを公開・運用するときに最低限やるべきことをチェックリストとして実行でき、万一漏洩が起きたときの初動を説明できる。",
-    learn:["サーバー堅牢化：SSHは鍵認証のみ、不要ポートを閉じる、fail2ban、自動セキュリティ更新","ログとアラート：「漏れたかどうか」を後から判断するために何を残すか","サプライチェーン対策：依存関係スキャンとシークレットスキャンをCIに組み込む（Trivy、gitleaksなど）","インシデントの初動と、個人情報保護法上の報告義務（個人情報保護委員会への漏えい等報告）"],
+    learn:["サーバー堅牢化：SSHは鍵認証のみ、不要ポートを閉じる、fail2ban、自動セキュリティ更新","Laravelの本番設定：`APP_DEBUG=false`、`APP_KEY` の管理、`.env` を公開ディレクトリに置かない、`storage` の権限","ログとアラート：「漏れたかどうか」を後から判断するために何を残すか","サプライチェーン対策：依存関係スキャンとシークレットスキャンをCIに組み込む（Trivy、gitleaksなど）","インシデントの初動と、個人情報保護法上の報告義務（個人情報保護委員会への漏えい等報告）"],
     mats:[
+      {t:"Laravel 公式：Deployment", u:"https://laravel.com/docs/deployment", n:"公式Docs・英語／本番設定の最低限"},
       {t:"IPA「安全なウェブサイトの運用管理に向けての20ヶ条」", u:"https://www.ipa.go.jp/security/vuln/websecurity/sitecheck.html", n:"運用チェックリスト"},
       {t:"個人情報保護委員会「漏えい等報告について」", u:"https://www.ppc.go.jp/personalinfo/legal/leakAction", n:"報告が必要な事案と期限"},
       {t:"個人情報保護委員会「大規模な漏えい等事案を踏まえた対応について（注意喚起）」", u:"https://www.ppc.go.jp/files/pdf/261007_alert_dataleakage.pdf", n:"2026年10月・PDF"}
     ],
-    warn:"EC-CUBEのVPS（Ubuntu 20.04）は2025年に標準サポートが終了済みです。Week 4で最優先に判断しましょう。",
-    tasks:["Ubuntu Pro（ESM）を使うか、OSアップグレードするかを判断する（PHPのバージョンアップ計画とあわせて整理）","Apacheの設定を見直す：バージョン情報の非表示、セキュリティヘッダー（CSP、HSTSなど）","デプロイパイプラインに `composer audit` とシークレットスキャンを組み込む","バックアップの所在と、実際にリストアできるかを確認する"],
+    warn:"サポートが切れたOS・PHP・Laravelのバージョンを使い続けていないかを最初に確認しましょう。どんな対策も、土台が古いと効果が薄れます。",
+    taskTitle:"練習アプリでやること",
+    tasks:["練習アプリをDockerかVPSで本番相当の設定で動かし、`APP_DEBUG`・`.env` の置き場所・ディレクトリ権限を確認する","Webサーバーの設定を見直す：バージョン情報の非表示、セキュリティヘッダー（CSP、HSTSなど）","GitHub Actionsに `composer audit` とシークレットスキャンを組み込む","バックアップを取り、実際にリストアできるか一度試す"],
+    parts:["チェックリストにインフラ・運用の項目と、インシデント初動の手順を追加する"],
     checks:["新しくサーバーを立てるときの最低限のセキュリティチェックリストを持っている","「漏洩の疑いがある」と言われたときの最初の1時間の動き（止める・保全する・報告する）を説明できる","依存関係のスキャンがCIで自動実行されている"] }
 ];
 
-const KEY = "sec-roadmap-v1";
+const KEY = "sec-roadmap-v2";
 let state = { checked:{}, start:"" };
 try{ const s = localStorage.getItem(KEY); if(s){ const p = JSON.parse(s); state = { checked:p.checked||{}, start:p.start||"" }; } }catch(e){}
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
@@ -239,11 +282,12 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e
 const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fmt = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
 
-function itemsOf(w){ return [...w.tasks.map((t,i)=>w.id+"-t"+i), ...w.checks.map((c,i)=>w.id+"-c"+i)]; }
-const FINAL_ID = "final-t0";
+function itemsOf(w){ return [...w.tasks.map((t,i)=>w.id+"-t"+i), ...(w.parts||[]).map((t,i)=>w.id+"-p"+i), ...w.checks.map((c,i)=>w.id+"-c"+i)]; }
+const FINAL = ["練習アプリのリポジトリを公開する（脆弱→修正のPR履歴とREADMEつき）","チェックリストを記事かリポジトリとして公開する","チェックリストをClaude CodeのSkill（`/security-check`）にして、開発キットに入れる"];
+const FINAL_IDS = FINAL.map((_,i)=>"final-t"+i);
 
 function checklist(w, list, prefix, kind){
-  return `<ul class="checks">${list.map((t,i)=>{
+  return `<ul class="checks${prefix==="p"?" parts":""}">${list.map((t,i)=>{
     const id = `${w.id}-${prefix}${i}`;
     return `<li><label><input type="checkbox" data-id="${id}" data-w="${w.id}" ${state.checked[id]?"checked":""}><span>${kind?`<span class="kind">${kind}</span>`:""}${fmt(t)}</span></label></li>`;
   }).join("")}</ul>`;
@@ -267,6 +311,7 @@ weeksEl.innerHTML = WEEKS.map((w,n)=>`
         <h3>${w.taskTitle || (n===0?"アウトプット":"自分のシステムでやること")}</h3>
         ${w.warn?`<p class="warn">${fmt(w.warn)}</p>`:""}
         ${checklist(w, w.tasks, "t", "")}
+        ${w.parts?`<h3>成果物への積み上げ</h3>${checklist(w, w.parts, "p", "")}`:""}
         <h3>到達チェック</h3>
         <p class="sub">全部に「はい」と言えたら次の週へ</p>
         ${checklist(w, w.checks, "c", "")}
@@ -277,9 +322,10 @@ weeksEl.innerHTML = WEEKS.map((w,n)=>`
 <section class="week final" id="final">
   <div class="wnum">✓<small>仕上げ</small></div>
   <div>
-    <h2>簡易セキュリティレビュー資料をまとめる</h2>
-    <div class="goal"><span class="gl">1ヶ月の締め</span><p>担当システムについて「確認したこと・見つかったリスク・対応済み／未対応・推奨アクション」を1つの資料にまとめる。引き継ぎドキュメントにも、次の職場で語れる実績にもなります。</p><span class="badge">完走</span></div>
-    <ul class="checks"><li><label><input type="checkbox" data-id="${FINAL_ID}" data-w="final" ${state.checked[FINAL_ID]?"checked":""}><span>簡易セキュリティレビュー資料を完成させる</span></label></li></ul>
+    <h2>成果物を完成させて公開する</h2>
+    <div class="goal"><span class="gl">1ヶ月の締め</span><p>練習アプリとチェックリストを仕上げて公開する。どの職場のどのLaravelプロジェクトにも持ち込める、自分の武器になります。</p><span class="badge">完走</span></div>
+    <ul class="checks">${FINAL.map((t,i)=>`<li><label><input type="checkbox" data-id="${FINAL_IDS[i]}" data-w="final" ${state.checked[FINAL_IDS[i]]?"checked":""}><span>${fmt(t)}</span></label></li>`).join("")}</ul>
+    <p class="sub">同じチェックリストを担当中のシステムに当てれば、そのまま引き継ぎ用のレビュー資料にもなります。</p>
     <h3>その先へ</h3>
     <div class="next">
       <div><strong>体系的に固める</strong><span>情報処理安全確保支援士を目標にする</span></div>
@@ -290,7 +336,7 @@ weeksEl.innerHTML = WEEKS.map((w,n)=>`
 
 /* Nav + legend */
 document.getElementById("nav").innerHTML = WEEKS.map(w=>`<li><a href="#${w.id}" data-nav="${w.id}" style="--c:var(${w.color})">${w.label}<br>${w.short}<span class="bar"><i></i></span></a></li>`).join("") +
-  `<li><a href="#final" data-nav="final" style="--c:var(--final)">仕上げ<br>レビュー資料<span class="bar"><i></i></span></a></li>`;
+  `<li><a href="#final" data-nav="final" style="--c:var(--final)">仕上げ<br>公開<span class="bar"><i></i></span></a></li>`;
 document.getElementById("legend").innerHTML = WEEKS.map(w=>`<li><span class="dot" style="background:var(${w.color})"></span>${w.layer}（${w.label}）<span class="lp" data-lp="${w.id}">0%</span></li>`).join("");
 
 /* Rings: inner = week 1, outer = week 4 */
@@ -305,12 +351,12 @@ ringsEl.innerHTML = WEEKS.map((w,i)=>{
 function ratio(ids){ return ids.length ? ids.filter(id=>state.checked[id]).length/ids.length : 0; }
 
 const MSGS = [
-  [0,   "まずはWeek 1の書き出しから。1枚書くだけで景色が変わります。"],
+  [0,   "まずは練習アプリの題材決めから。1枚書くだけで景色が変わります。"],
   [.01, "動き出しました。毎日1つチェックが増えれば十分なペースです。"],
   [.25, "1/4を超えました。内側の層ができてきています。"],
-  [.5,  "折り返し地点。ここからは自分のシステムに効く作業が中心です。"],
+  [.5,  "折り返し地点。修正PRがそろってきたら、成果物の半分はできています。"],
   [.75, "ゴールが見えています。最後はインフラと運用で外側を固めましょう。"],
-  [1,   "4つの層がそろいました。レビュー資料にまとめて完走です。"]
+  [1,   "4つの層がそろいました。成果物を公開して完走です。"]
 ];
 
 function update(){
@@ -324,8 +370,8 @@ function update(){
     document.querySelector(`[data-nav="${w.id}"] .bar i`).style.width = (r*100)+"%";
     document.getElementById(w.id).classList.toggle("done", r===1);
   });
-  all.push(FINAL_ID);
-  const fr = state.checked[FINAL_ID]?1:0;
+  all = all.concat(FINAL_IDS);
+  const fr = ratio(FINAL_IDS);
   document.querySelector(`[data-nav="final"] .bar i`).style.width = (fr*100)+"%";
   document.getElementById("final").classList.toggle("done", fr===1);
   const total = ratio(all);
@@ -342,7 +388,7 @@ function updateNow(){
   const s = new Date(state.start+"T00:00:00"), t = new Date(); t.setHours(0,0,0,0);
   const day = Math.floor((t - s)/86400000) + 1;
   if(day < 1){ now.innerHTML = `開始まであと <strong>${1-day}日</strong>。準備はWeek 1の教材を手元にそろえるだけでOKです。`; return; }
-  if(day > 28){ now.innerHTML = `<strong>${day}日目</strong>。予定の28日を過ぎました。残りのチェックを片付けて、レビュー資料で締めましょう。`; document.querySelector('[data-nav="final"]').classList.add("current"); return; }
+  if(day > 28){ now.innerHTML = `<strong>${day}日目</strong>。予定の28日を過ぎました。残りのチェックを片付けて、成果物の公開で締めましょう。`; document.querySelector('[data-nav="final"]').classList.add("current"); return; }
   const wk = Math.ceil(day/7);
   now.innerHTML = `今日は <strong>${day}日目</strong>、<strong>Week ${wk}</strong>（${WEEKS[wk-1].short}）。ゴールまであと ${28-day}日です。`;
   document.querySelector(`[data-nav="w${wk}"]`).classList.add("current");
